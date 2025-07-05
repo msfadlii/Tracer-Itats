@@ -1,5 +1,5 @@
 <!-- Mobile Collapsed Sidebar -->
-<div class="fixed bottom-0 left-0 right-0 z-50 bg-blue-900 text-white flex justify-around items-center py-2 shadow-lg md:hidden">
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-blue-600 text-white flex justify-around items-center py-2 shadow-lg md:hidden">
     
     <a href="{{ route('dashboard') }}" class="flex flex-col items-center text-xs hover:text-blue-300 transition-all">
         <i class="fas fa-tachometer-alt text-lg"></i>

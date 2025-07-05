@@ -84,7 +84,9 @@ public function storeForm(Request $request)
             'telepon'           => $request->telepon,
             'npwp'              => $request->npwp,
             'dosen_pembimbing'  => $request->dosen_pembimbing,
-            'pembiayaan'        => $request->pembiayaan,
+            'pembiayaan' => $request->pembiayaan === 'Yang lain' && $request->filled('pembiayaan_lainnya')
+                            ? $request->pembiayaan_lainnya
+                            : $request->pembiayaan,
             'status'            => $request->status,
         ]);
 
@@ -121,11 +123,17 @@ foreach ($jawaban as $pertanyaanId => $isiJawaban) {
     if (is_array($isiJawaban)) {
         // Checkbox: jika ada value "Lainnya", ganti dengan input manual
         if (in_array("Lainnya", $isiJawaban) && isset($jawabanLain[$pertanyaanId])) {
-            $filtered = array_map(function ($val) use ($jawabanLain, $pertanyaanId) {
-                return $val === "Lainnya" ? $jawabanLain[$pertanyaanId] : $val;
+            // Hanya ganti satu elemen "Lainnya" dengan jawaban manual
+            $replaced = false;
+            $filtered = array_map(function ($val) use (&$replaced, $jawabanLain, $pertanyaanId) {
+                if ($val === "Lainnya" && !$replaced) {
+                    $replaced = true;
+                    return $jawabanLain[$pertanyaanId];
+                }
+                return $val;
             }, $isiJawaban);
             $jawabanFinal = json_encode($filtered);
-        } else {
+        }  else {
             $jawabanFinal = json_encode($isiJawaban);
         }
     } else {

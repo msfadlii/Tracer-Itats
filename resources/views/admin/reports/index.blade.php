@@ -1,3 +1,4 @@
+
 <x-app-layout>
     <x-slot name="header">
         <div class="mb-6 flex items-start gap-4 animate-fancy-in">
@@ -141,8 +142,15 @@
                             </div>
 
                             {{-- Tahun Lulus --}}
-                            <div class="flex flex-col year-dropdown-container" x-data='multiYear(@json($graduationYears), @json($selectedYears))' x-cloak>
+                            <div class="flex flex-col year-dropdown-container" x-data="multiYear()" x-cloak>
                                 <label class="mb-2 text-sm font-semibold text-gray-700">Tahun Lulus</label>
+
+                                {{-- Debug info (hapus setelah testing) --}}
+                                <div class="mb-2 p-2 bg-yellow-50 text-xs rounded" x-show="true">
+                                    <strong>Debug:</strong> 
+                                    <span x-text="'Selected: ' + JSON.stringify(selected)"></span><br>
+                                    <span x-text="'All Years: ' + JSON.stringify(allYears)"></span>
+                                </div>
 
                                 <div class="relative">
                                     <button @click="open = !open" type="button"
@@ -181,7 +189,7 @@
                                                     <li @click="toggle(year)"
                                                         class="flex items-center px-4 py-3 cursor-pointer hover:bg-blue-50 select-none transition-colors">
                                                         <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 rounded"
-                                                            :checked="selected.includes(year)" @click.stop="toggle(year)" />
+                                                            :checked="isSelected(year)" @click.stop="toggle(year)" />
                                                         <span class="ml-3 text-gray-900 text-sm" x-text="year"></span>
                                                     </li>
                                                 </template>
@@ -210,7 +218,6 @@
                                     <input type="hidden" name="graduation_year[]" :value="year" />
                                 </template>
                             </div>
-                        </div>
 
                         <!-- Row 2: Halaman Kuesioner dan Pertanyaan -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -354,7 +361,7 @@
                 toggleDownloadButton(false);
             }
 
-            let chartLabel = 'Jumlah Alumni';
+            let chartLabel = 'Jumlah';
 
             if (selectedCategory) {
                 chartLabel += ` - ${selectedCategory.replace(/_/g, ' ')}`;
@@ -415,8 +422,9 @@
 
         const chartTypeSelect = document.getElementById('chart_type');
         if (chartTypeSelect) {
-            chartTypeSelect.value = 'bar';
-            renderChart('bar');
+            chartTypeSelect.value = '{{ $chartType }}';
+                renderChart('{{ $chartType }}');
+
 
             chartTypeSelect.addEventListener('change', function () {
                 renderChart(this.value);
@@ -452,27 +460,53 @@
             }
         });
 
-        function multiYear(allYears = [], preSelected = []) {
+        function multiYear() {
             return {
                 open: false,
-                all: allYears,
-                selected: preSelected,
+                allYears: @json($graduationYears),
+                selected: [],
                 search: '',
+                
+                init() {
+                    // Ambil data dari server
+                    const serverSelected = @json($selectedYears ?? []);
+                    console.log('Server selected:', serverSelected);
+                    console.log('All years:', this.allYears);
+                    
+                    // Pastikan selected adalah array dan berisi integer
+                    this.selected = Array.isArray(serverSelected) ? 
+                        serverSelected.map(year => parseInt(year)) : 
+                        [];
+                        
+                    console.log('Final selected:', this.selected);
+                },
+                
                 get filtered() {
-                    return this.all.filter(year =>
+                    return this.allYears.filter(year =>
                         year.toString().includes(this.search.toLowerCase())
                     );
                 },
+                
+                isSelected(year) {
+                    const isSelected = this.selected.includes(parseInt(year));
+                    console.log(`Year ${year} is selected:`, isSelected);
+                    return isSelected;
+                },
+                
                 toggle(year) {
-                    if (this.selected.includes(year)) {
-                        this.selected = this.selected.filter(y => y !== year);
+                    const yearInt = parseInt(year);
+                    if (this.selected.includes(yearInt)) {
+                        this.selected = this.selected.filter(y => y !== yearInt);
                     } else {
-                        this.selected.push(year);
+                        this.selected.push(yearInt);
                     }
+                    console.log('Selected after toggle:', this.selected);
                 },
+                
                 selectAll() {
-                    this.selected = [...this.all];
+                    this.selected = [...this.allYears];
                 },
+                
                 reset() {
                     this.selected = [];
                     this.search = '';

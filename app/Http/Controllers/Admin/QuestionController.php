@@ -286,9 +286,9 @@ public function update(Request $request, Pertanyaan $question)
     }
 
     // === KONDISI STATUS KERJA ===
-    $question->kondisiPertanyaans()->delete();
+    $question->kondisiPertanyaan()->delete();
     foreach ($request->employment_conditions ?? [] as $status) {
-        $question->kondisiPertanyaans()->create([
+        $question->kondisiPertanyaan()->create([
             'field' => 'status',
             'nilai_status_kerja' => $status,
         ]);

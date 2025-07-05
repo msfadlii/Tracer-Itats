@@ -1,5 +1,5 @@
 <div
-    class="relative flex flex-col justify-between h-full w-full p-4 bg-gradient-to-b from-blue-500 via-blue-500 to-blue-500 text-white shadow-xl">
+    class="relative flex flex-col justify-between h-full w-full p-4 bg-gradient-to-b from-blue-600 via-blue-600 to-blue-600 text-white shadow-xl">
     <!-- Toggle Button -->
     <div class="absolute top-1/2 -right-4 transform -translate-y-1/2 z-20">
         <button @click="sidebarCollapsed = !sidebarCollapsed"
