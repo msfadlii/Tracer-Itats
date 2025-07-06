@@ -146,11 +146,11 @@
                                 <label class="mb-2 text-sm font-semibold text-gray-700">Tahun Lulus</label>
 
                                 {{-- Debug info (hapus setelah testing) --}}
-                                <div class="mb-2 p-2 bg-yellow-50 text-xs rounded" x-show="true">
+                                {{-- <div class="mb-2 p-2 bg-yellow-50 text-xs rounded" x-show="true">
                                     <strong>Debug:</strong> 
                                     <span x-text="'Selected: ' + JSON.stringify(selected)"></span><br>
                                     <span x-text="'All Years: ' + JSON.stringify(allYears)"></span>
-                                </div>
+                                </div> --}}
 
                                 <div class="relative">
                                     <button @click="open = !open" type="button"

@@ -26,14 +26,13 @@ class DashboardController extends Controller
         $alumni = $query->count();
         $alumniBekerja = $query->clone()->where('status', 'like', '%Bekerja%')->count();
 
-        $waktuTunggu = \App\Models\WaktuTungguKerja::avg('waktu_tunggu_bulan');
 
         // Gaji
-        $gajiPertanyaanId = \App\Models\Pertanyaan::where('teks', 'like', '%gaji%')->value('id');
+        $gajiPertanyaanId = Pertanyaan::where('teks', 'like', '%gaji%')->value('id');
         $gajiAvg = null;
 
         if ($gajiPertanyaanId) {
-            $gajiAvg = \App\Models\JawabanAlumni::where('pertanyaan_id', $gajiPertanyaanId)
+            $gajiAvg =JawabanAlumni::where('pertanyaan_id', $gajiPertanyaanId)
                 ->join('pengisians', 'jawaban_alumnis.pengisian_id', '=', 'pengisians.id')
                 ->join('alumnis', 'pengisians.alumni_id', '=', 'alumnis.id')
                 ->when($request->filled('tahun'), fn($q) => $q->where('alumnis.tahun_lulus', $request->tahun))
@@ -60,11 +59,11 @@ class DashboardController extends Controller
             ->get();
 
         // Top Perusahaan (Jawaban Alumni)
-        $perusahaanPertanyaanId = \App\Models\Pertanyaan::where('teks', 'like', '%perusahaan%')->value('id');
+        $perusahaanPertanyaanId = Pertanyaan::where('teks', 'like', '%perusahaan%')->value('id');
         $topPerusahaan = collect();
 
         if ($perusahaanPertanyaanId) {
-            $topPerusahaan = \App\Models\JawabanAlumni::where('pertanyaan_id', $perusahaanPertanyaanId)
+            $topPerusahaan = JawabanAlumni::where('pertanyaan_id', $perusahaanPertanyaanId)
                 ->join('pengisians', 'jawaban_alumnis.pengisian_id', '=', 'pengisians.id')
                 ->join('alumnis', 'pengisians.alumni_id', '=', 'alumnis.id')
                 ->when($request->filled('tahun'), fn($q) => $q->where('alumnis.tahun_lulus', $request->tahun))
@@ -79,7 +78,7 @@ class DashboardController extends Controller
         // Gaji per Tahun (Chart Line)
         $gajiPerTahun = collect();
         if ($gajiPertanyaanId) {
-            $gajiPerTahun = \App\Models\JawabanAlumni::where('jawaban_alumnis.pertanyaan_id', $gajiPertanyaanId)
+            $gajiPerTahun = JawabanAlumni::where('jawaban_alumnis.pertanyaan_id', $gajiPertanyaanId)
                 ->join('pengisians', 'jawaban_alumnis.pengisian_id', '=', 'pengisians.id')
                 ->join('alumnis', 'pengisians.alumni_id', '=', 'alumnis.id')
                 ->when($request->filled('status'), fn($q) => $q->where('alumnis.status', 'like', '%' . $request->status . '%'))
@@ -96,7 +95,6 @@ class DashboardController extends Controller
         return view('admin.dashboard', compact(
             'alumni',
             'alumniBekerja',
-            'waktuTunggu',
             'gajiAvg',
             'distribusiStatus',
             'alumniPerTahun',

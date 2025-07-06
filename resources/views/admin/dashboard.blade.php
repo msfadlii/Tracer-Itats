@@ -32,7 +32,6 @@
         <x-summary-card label="Total Alumni" :value="$alumni" icon="users" color="blue" />
         <x-summary-card label="Alumni Bekerja" :value="$alumniBekerja" icon="briefcase" color="green" />
         <x-summary-card label="Rata-rata Gaji" :value="$gajiAvg ? 'Rp' . number_format($gajiAvg, 0, ',', '.') : 'N/A'" icon="money-bill-wave" color="purple" />
-        <x-summary-card label="Waktu Tunggu Kerja" :value="number_format($waktuTunggu, 1, ',', '.') . ' bulan'" icon="clock" color="yellow" />
       </div>
 
       <!-- Chart 1 & 2 -->
