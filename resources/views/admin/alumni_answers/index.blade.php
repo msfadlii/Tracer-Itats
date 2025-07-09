@@ -199,13 +199,6 @@
                     <div id="modalContent" class="space-y-3 text-sm text-gray-800 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                         <!-- Content will be loaded here -->
                     </div>
-
-                    <!-- Modal Footer -->
-                    <div class="mt-6 pt-6 border-t border-gray-200 flex justify-end">
-                        <button onclick="closeModal()" class="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl font-medium hover:from-gray-600 hover:to-gray-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                            Tutup
-                        </button>
-                    </div>
                 </div>
             </div>
 

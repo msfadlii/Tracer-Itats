@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('pengisian_id')->constrained('pengisians')->onDelete('cascade');
             $table->foreignId('pertanyaan_id')->constrained('pertanyaans')->onDelete('cascade');
             $table->foreignId('baris_matrix_id')->constrained('baris_matrixs')->onDelete('cascade');
-            $table->string('jawaban');
+            $table->string('jawaban')->nullable();
             $table->timestamps();
         });
     }

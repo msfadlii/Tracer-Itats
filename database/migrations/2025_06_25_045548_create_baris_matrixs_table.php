@@ -14,7 +14,7 @@ return new class extends Migration
       Schema::create('baris_matrixs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pertanyaan_id')->constrained('pertanyaans')->onDelete('cascade');
-            $table->string('label');
+            $table->string('label')->nullable();
             $table->timestamps();
         });     
 

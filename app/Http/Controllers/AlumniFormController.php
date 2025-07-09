@@ -110,6 +110,7 @@ $pertanyaanValid = Pertanyaan::whereHas('kondisiPertanyaan', function ($query) u
 
    $jawaban = $request->input('answers', []);
     $jawabanLain = $request->input('answers_lain', []);
+
 foreach ($jawaban as $pertanyaanId => $isiJawaban) {
     if (!in_array($pertanyaanId, $pertanyaanValid)) {
         Log::info(" Skip pertanyaan $pertanyaanId karena tidak sesuai status '$statusKerja'");
@@ -142,21 +143,23 @@ foreach ($jawaban as $pertanyaanId => $isiJawaban) {
             $jawabanFinal = $jawabanLain[$pertanyaanId];
         }
     }
+            if (!is_null($jawabanFinal) && $jawabanFinal !== '') {
+            Log::info('✅ JawabanAlumni akan disimpan', [
+                'pengisian_id'  => $pengisian->id,
+                'pertanyaan_id' => $pertanyaanId,
+                'jawaban'       => $jawabanFinal,
+            ]);
 
-    Log::info('✅ JawabanAlumni akan disimpan', [
-        'pengisian_id'  => $pengisian->id,
-        'pertanyaan_id' => $pertanyaanId,
-        'jawaban'       => $jawabanFinal,
-    ]);
+            JawabanAlumni::create([
+                'pengisian_id'  => $pengisian->id,
+                'pertanyaan_id' => $pertanyaanId,
+                'jawaban'       => $jawabanFinal,
+            ]);
+        } else {
+            Log::warning("⚠️ Jawaban kosong untuk pertanyaan $pertanyaanId — tidak disimpan.");
+        }
 
-
-    JawabanAlumni::create([
-        'pengisian_id'  => $pengisian->id,
-        'pertanyaan_id' => $pertanyaanId,
-        'jawaban'       => $jawabanFinal,
-    ]);
 }
-
 
 foreach ($request->input('matrix_answers', []) as $pertanyaanId => $barisJawaban) {
     if (!in_array($pertanyaanId, $pertanyaanValid)) {

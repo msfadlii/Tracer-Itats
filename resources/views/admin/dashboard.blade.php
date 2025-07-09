@@ -9,15 +9,17 @@
         <select name="tahun" class="border border-gray-300 rounded-lg text-sm py-2 px-3">
           <option value="">Semua Tahun</option>
           @foreach ($tahunOptions as $t)
-            <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>{{ $t }}</option>
-          @endforeach
+        <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>{{ $t }}</option>
+      @endforeach
         </select>
         <select name="status" class="border border-gray-300 rounded-lg text-sm py-2 px-3">
           <option value="">Semua Status</option>
           <option value="Bekerja" {{ request('status') == 'Bekerja' ? 'selected' : '' }}>Bekerja</option>
           <option value="Wiraswasta" {{ request('status') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
-          <option value="Melanjutkan Studi" {{ request('status') == 'Melanjutkan Studi' ? 'selected' : '' }}>Melanjutkan Studi</option>
-          <option value="Mencari Kerja" {{ request('status') == 'Mencari Kerja' ? 'selected' : '' }}>Mencari Kerja</option>
+          <option value="Melanjutkan Studi" {{ request('status') == 'Melanjutkan Studi' ? 'selected' : '' }}>Melanjutkan
+            Studi</option>
+          <option value="Mencari Kerja" {{ request('status') == 'Mencari Kerja' ? 'selected' : '' }}>Mencari Kerja
+          </option>
         </select>
         <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">Terapkan</button>
       </form>
@@ -28,10 +30,18 @@
     <div class="max-w-7xl mx-auto space-y-6">
 
       <!-- Ringkasan -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-        <x-summary-card label="Total Alumni" :value="$alumni" icon="users" color="blue" />
-        <x-summary-card label="Alumni Bekerja" :value="$alumniBekerja" icon="briefcase" color="green" />
-        <x-summary-card label="Rata-rata Gaji" :value="$gajiAvg ? 'Rp' . number_format($gajiAvg, 0, ',', '.') : 'N/A'" icon="money-bill-wave" color="purple" />
+      <div class="flex flex-wrap gap-5">
+        <div class="flex-1 min-w-[200px] max-w-sm">
+          <x-summary-card label="Total Alumni" :value="$alumni" icon="users" color="blue" />
+        </div>
+        <div class="flex-1 min-w-[200px] max-w-sm">
+          <x-summary-card label="Alumni Bekerja" :value="$alumniBekerja" icon="briefcase" color="green" />
+        </div>
+        <div class="flex-1 min-w-[200px] max-w-sm">
+          <x-summary-card label="Rata-rata Gaji" :value="$gajiAvg ? 'Rp' . number_format($gajiAvg, 0, ',', '.') : 'N/A'"
+            icon="money-bill-wave" color="purple" />
+        </div>
+              
       </div>
 
       <!-- Chart 1 & 2 -->
@@ -57,13 +67,13 @@
           <h3 class="text-lg font-semibold mb-4">Top 5 Perusahaan dengan Alumni Terbanyak</h3>
           <ul class="divide-y divide-gray-100 text-sm">
             @forelse ($topPerusahaan as $i => $p)
-              <li class="py-2 flex justify-between">
-                <span>{{ $i+1 }}. {{ $p->nama_perusahaan }}</span>
-                <span class="text-gray-500">{{ $p->total }} alumni</span>
-              </li>
-            @empty
-              <li class="py-2 text-gray-400">Belum ada data perusahaan</li>
-            @endforelse
+        <li class="py-2 flex justify-between">
+          <span>{{ $i + 1 }}. {{ $p->nama_perusahaan }}</span>
+          <span class="text-gray-500">{{ $p->total }} alumni</span>
+        </li>
+      @empty
+        <li class="py-2 text-gray-400">Belum ada data perusahaan</li>
+      @endforelse
           </ul>
         </div>
 

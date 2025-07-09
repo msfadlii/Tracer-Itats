@@ -32,9 +32,6 @@ class Alumni extends Model
     {
         return $this->hasMany(Pengisian::class);
     }
-    public function waktuTungguKerjas()
-    {
-        return $this->hasOne(WaktuTungguKerja::class);
-    }
+   
 }
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('opsi_jawabans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pertanyaan_id')->constrained('pertanyaans')->onDelete('cascade');
-            $table->string('teks');
+            $table->string('teks')->nullable();
             $table->integer('urutan')->nullable();
             $table->timestamps();
         });

@@ -8,19 +8,24 @@ use App\Models\JenisPertanyaan;
 use App\Models\HalamanKuesioner;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+
+
+use function Laravel\Prompts\search;
 
 class QuestionController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->get('search');
-        $selectedStatus = $request->get('Status_saat_ini');
+        $selectedStatus = $request->get('status');
+        log::info($selectedStatus);
 
         $query = Pertanyaan::with(['jenisPertanyaan', 'opsiJawabans', 'kondisiPertanyaan','barisMatrixs'])
             ->when($search, fn($q) => $q->where('teks', 'like', '%' . $search . '%'));
 
         if ($selectedStatus) {
-            $query->whereHas('kondisiPertanyaans', fn($q) =>
+            $query->whereHas('kondisiPertanyaan', fn($q) =>
                 $q->where('field', 'status')->where('nilai_status_kerja', $selectedStatus)
             );
         }

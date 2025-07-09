@@ -33,11 +33,11 @@
                 </div>
 
                 <div class="flex-1 max-w-xs">
-                  <select name="Status_saat_ini"
+                  <select name="status"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
                     <option value="">Semua Status Kerja</option>
                     @foreach($statusList as $status)
-            <option value="{{ $status }}" {{ request('Status_saat_ini') == $status ? 'selected' : '' }}>
+            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
               {{ $status }}
             </option>
           @endforeach
@@ -50,7 +50,7 @@
                     <i class="fas fa-filter mr-2"></i>Filter
                   </button>
 
-                  @if(request()->hasAny(['search', 'Status_saat_ini']))
+                  @if(request()->hasAny(['search', 'status']))
             <a href="{{ route('admin.questions.index') }}"
             class="px-6 py-2.5 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg">
             <i class="fas fa-times mr-2"></i>Reset
@@ -92,8 +92,8 @@
           @if(request('search'))
         untuk pencarian "<strong>{{ request('search') }}</strong>"
       @endif
-          @if(request('Status_saat_ini'))
-        dengan status "<strong>{{ request('Status_saat_ini') }}</strong>"
+          @if(request('status'))
+        dengan status "<strong>{{ request('status') }}</strong>"
       @endif
         </div>
         </div>
@@ -254,13 +254,13 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada pertanyaan</h3>
                 <p class="text-sm text-gray-500 mb-4">
-                @if(request()->hasAny(['search', 'Status_saat_ini']))
+                @if(request()->hasAny(['search', 'status']))
             Tidak ada pertanyaan yang sesuai dengan filter yang dipilih.
           @else
             Silakan tambah pertanyaan baru untuk memulai.
           @endif
                 </p>
-                @if(!request()->hasAny(['search', 'Status_saat_ini']))
+                @if(!request()->hasAny(['search', 'status']))
             <a href="{{ route('admin.questions.create') }}"
             class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
             <i class="fas fa-plus mr-2"></i>
@@ -275,17 +275,37 @@
             </table>
           </div>
 
-          {{-- Pagination --}}
-          @if($questions->hasPages())
-        <div class="mt-6 flex items-center justify-between">
-        <div class="text-sm text-gray-600">
-          Halaman {{ $questions->currentPage() }} dari {{ $questions->lastPage() }}
-        </div>
-        <div class="flex items-center space-x-2">
-          {{ $questions->withQueryString()->links() }}
-        </div>
-        </div>
-      @endif
+         {{-- Pagination --}}
+<div class="relative mt-6 flex items-center">
+  
+  {{-- Prev (kiri) --}}
+  <div id="prev-wrapper" class="flex-1">
+    @if ($questions->onFirstPage())
+        <span class="text-gray-400">← Prev</span>
+    @else
+        <a href="{{ $questions->previousPageUrl() }}" class="text-white bg-blue-500 px-4 py-2 rounded-full">← Prev</a>
+    @endif
+  </div>
+
+  {{-- Halaman Info (tengah) --}}
+  <div class="absolute left-1/2 transform -translate-x-1/2">
+    <span class="text-sm text-gray-600">
+        Halaman {{ $questions->currentPage() }} dari {{ $questions->lastPage() }}
+    </span>
+  </div>
+
+  {{-- Next (kanan) --}}
+  <div id="next-wrapper" class="flex-1 text-right">
+    @if ($questions->hasMorePages())
+        <a href="{{ $questions->nextPageUrl() }}" class="text-white bg-blue-500 px-4 py-2 rounded-full">Next →</a>
+    @else
+        <span class="text-gray-400">Next →</span>
+    @endif
+  </div>
+
+</div>
+
+
         </div>
       </div>
     </div>
@@ -320,6 +340,18 @@
 
   {{-- JavaScript --}}
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const prevWrapper = document.getElementById('prev-wrapper');
+        const nextWrapper = document.getElementById('next-wrapper');
+
+        if (prevWrapper.querySelector('span')) {
+            prevWrapper.style.display = 'none';
+        }
+
+        if (nextWrapper.querySelector('span')) {
+            nextWrapper.style.display = 'none';
+        }
+    });
     function showQuestionDetail(questionId) {
       const questions = @json($questions->items());
       const question = questions.find(q => q.id === questionId);
@@ -406,15 +438,15 @@
       }
 
       // Add employment conditions
-      if (question.kondisi_pertanyaans && question.kondisi_pertanyaans.length > 0) {
+      if (question.kondisi_pertanyaan && question.kondisi_pertanyaan.length > 0) {
         content += `
           <div class="bg-white border border-gray-200 p-4 rounded-lg">
             <h5 class="font-medium text-gray-600 mb-3 flex items-center">
               <i class="fas fa-filter mr-2 text-orange-600"></i>
-              Kondisi Tampil (${question.kondisi_pertanyaans.length})
+              Kondisi Tampil (${question.kondisi_pertanyaan.length})
             </h5>
             <div class="flex flex-wrap gap-2">
-              ${question.kondisi_pertanyaans.map(kondisi => `
+              ${question.kondisi_pertanyaan.map(kondisi => `
                 <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
                   ${kondisi.nilai_status_kerja}
                 </span>
@@ -455,15 +487,15 @@
       }
 
       if (question.jenis_pertanyaan && question.jenis_pertanyaan.nama === 'matrix') {
-  const baris = question.baris_matrixs ?? [];
-  let kolom = [];
+        const baris = question.baris_matrixs ?? [];
+        let kolom = [];
 
-  try {
-    const attrs = JSON.parse(question.atribut_ekstra);
-    kolom = attrs.columns ?? [];
-  } catch (e) {}
+        try {
+          const attrs = JSON.parse(question.atribut_ekstra);
+          kolom = attrs.columns ?? [];
+        } catch (e) { }
 
-  content += `
+        content += `
     <div class="bg-white border border-gray-200 p-4 rounded-lg">
       <h5 class="font-medium text-gray-600 mb-3 flex items-center">
         <i class="fas fa-table mr-2 text-purple-600"></i>
@@ -496,7 +528,7 @@
       </div>
     </div>
   `;
-}
+      }
 
 
 
