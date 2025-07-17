@@ -48,8 +48,11 @@ public function showForm(Request $request)
         }
     }
 
+    $provinsiOptions = \DB::table('opsi_provinsi')->get();
+
     return view('alumni.form', [
         'halamanKuesioners' => $halamanKuesioners,
+        'provinsiOptions'   => $provinsiOptions,
     ]);
 }
 

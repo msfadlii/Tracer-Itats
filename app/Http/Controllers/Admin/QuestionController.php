@@ -115,8 +115,10 @@ class QuestionController extends Controller
             'wajib' => $request->boolean('wajib'),
             'punya_opsi_lain' => $request->boolean('punya_opsi_lain'),
             'visualisasi' => $request->boolean('visualisasi'),
+            'pakai_opsi_provinsi' => $request->boolean('pakai_opsi_provinsi'), // 🆕 Tambahan kita
             'atribut_ekstra' => $atributEkstra ? json_encode($atributEkstra) : null,
         ]);
+
 
         // Simpan opsi jawaban
         if (in_array($typeName, ['select', 'radio', 'checkbox']) && $request->opsi) {
@@ -246,8 +248,10 @@ public function update(Request $request, Pertanyaan $question)
         'wajib' => $request->boolean('wajib'),
         'punya_opsi_lain' => $request->boolean('punya_opsi_lain'),
         'visualisasi' => $request->boolean('visualisasi'),
+        'pakai_opsi_provinsi' => $request->boolean('pakai_opsi_provinsi'), // 🆕 Tambahan kita
         'atribut_ekstra' => $atributEkstra ? json_encode($atributEkstra) : null,
     ]);
+
 
     // === OPSI JAWABAN ===
     if (in_array($typeName, ['select', 'radio', 'checkbox'])) {
