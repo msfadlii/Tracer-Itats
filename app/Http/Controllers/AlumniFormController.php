@@ -57,17 +57,28 @@ public function storeForm(Request $request)
 {
     // === Validasi input ===
     $validated = $request->validate([
-        'tahun_lulus'       => 'required|digits:4',
-        'npm'               => 'required|string|unique:alumnis,npm',
-        'nama'              => 'required|string|max:255',
-        'nik'               => 'required|string|unique:alumnis,nik',
-        'tanggal_lahir'     => 'required|date',
+        'tahun_lulus'       => ['required', 'integer', 'min:1980', 'max:'.(date('Y')+1)],
+        'npm'               => ['required', 'regex:/^\d{12}$/', 'unique:alumnis,npm'],
+        'nama'              => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s\.]+$/'],
+        'nik'               => ['required', 'string', 'regex:/^\d{16}$/', 'unique:alumnis,nik'],
+        'tanggal_lahir'     => ['required', 'date', 'before:today', 'after:1950-01-01'],
         'email'             => 'required|email|unique:alumnis,email',
-        'telepon'           => 'nullable|string|max:20',
-        'npwp'              => 'nullable|string|max:30',
-        'dosen_pembimbing'  => 'required|string|max:255',
+        'telepon'           => ['required', 'regex:/^(\+62|62|0)[0-9]{9,13}$/'],
+        'npwp'              => ['nullable', 'regex:/^\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}$/'],
+        'dosen_pembimbing'  => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s\.,]+$/'],
         'pembiayaan'        => 'nullable|string|max:255',
         'status'            => 'required|string',
+    ], [
+        'nik.regex' => 'NIK harus berupa 16 digit angka tanpa spasi atau karakter lain.',
+        'npm.regex' => 'NPM harus berupa 12 digit angka.',
+        'nama.regex' => 'Nama hanya boleh berisi huruf, spasi, dan titik.',
+        'tanggal_lahir.before' => 'Tanggal lahir tidak boleh di masa depan.',
+        'tanggal_lahir.after' => 'Tanggal lahir tidak valid (minimal tahun 1950).',
+        'tahun_lulus.min' => 'Tahun lulus minimal 1980.',
+        'tahun_lulus.max' => 'Tahun lulus maksimal tahun depan.',
+        'telepon.regex' => 'Format nomor telepon tidak valid. Gunakan format Indonesia: 08xx, 62xx, atau +62xx.',
+        'npwp.regex' => 'Format NPWP tidak valid. Gunakan format: XX.XXX.XXX.X-XXX.XXX',
+        'dosen_pembimbing.regex' => 'Nama dosen hanya boleh berisi huruf, spasi, titik, dan koma.',
     ]);
 
     DB::beginTransaction();
