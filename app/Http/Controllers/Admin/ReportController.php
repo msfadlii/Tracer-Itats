@@ -45,11 +45,10 @@ class ReportController extends Controller
             $selectedYears = $selectedYears ? [$selectedYears] : [];
         }
         
-        // Filter out empty values dan convert ke integer
         $selectedYears = array_filter($selectedYears, function($year) {
             return !empty($year) && $year !== '';
         });
-        
+        // mengkonversi nilai menjadi integer
         $selectedYears = array_map('intval', $selectedYears);
         
         // Debug: Log processed selectedYears

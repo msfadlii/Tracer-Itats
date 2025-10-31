@@ -1,15 +1,15 @@
 <div class="space-y-8">
-  <!-- Header Section -->
+  <!-- Bagian Header -->
   <div class="text-center">
     <h1 class="text-2xl font-bold text-gray-900 mb-2">Informasi Alumni</h1>
     <p class="text-gray-600">Lengkapi data diri Anda untuk memulai tracer study</p>
   </div>
 
-  <!-- Form Content -->
+  <!-- Konten Formulir -->
   <div class="space-y-6">
-    <!-- Personal Information Card -->
+  <!-- Kartu Informasi Pribadi -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <!-- Card Header -->
+  <!-- Header Kartu -->
       <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-5">
         <div class="flex items-center space-x-3">
           <div class="bg-white bg-opacity-20 p-2 rounded-lg">
@@ -21,9 +21,9 @@
         </div>
       </div>
 
-      <!-- Card Body -->
+  <!-- Isi Kartu -->
       <div class="p-6 space-y-6">
-        <!-- Row 1: Tahun Lulus & NPM -->
+  <!-- Baris 1: Tahun Lulus & NPM -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="form-group" data-required="true">
             <label for="tahun_lulus" class="block text-sm font-medium text-gray-700 mb-2">
@@ -74,7 +74,7 @@
           </div>
         </div>
 
-        <!-- Row 2: Nama & NIK -->
+  <!-- Baris 2: Nama & NIK -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="form-group" data-required="true">
             <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">
@@ -117,7 +117,7 @@
           </div>
         </div>
 
-        <!-- Row 3: Tanggal Lahir & Email -->
+  <!-- Baris 3: Tanggal Lahir & Email -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="form-group" data-required="true">
             <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700 mb-2">
@@ -163,7 +163,7 @@
           </div>
         </div>
 
-        <!-- Row 4: Telepon & NPWP -->
+  <!-- Baris 4: Telepon & NPWP -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="form-group" data-required="true">
             <label for="nomor_telepon" class="block text-sm font-medium text-gray-700 mb-2">
@@ -173,9 +173,10 @@
               <input type="text" id="nomor_telepon" name="telepon" value="{{ old('telepon') }}" required
                 class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                 placeholder="08123456789"
+                maxlength="13"
                 pattern="(\+62|62|0)[0-9]{9,13}"
                 oninput="formatTelepon(this)"
-                title="Format nomor Indonesia: 08xx, 62xx, atau +62xx">
+                title="Format nomor Indonesia: 08xx, 62xx, atau +62xx (maksimal 13 digit)">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
@@ -201,6 +202,7 @@
               maxlength="20" pattern="\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
               placeholder="01.234.567.8-901.234"
+              oninput="formatNPWPSmart(this)"
               title="Format NPWP: XX.XXX.XXX.X-XXX.XXX">
             <p class="text-xs text-gray-500 mt-1">Format: XX.XXX.XXX.X-XXX.XXX (contoh: 01.234.567.8-901.234)</p>
             @error('npwp')
@@ -216,9 +218,9 @@
       </div>
     </div>
 
-    <!-- Academic Information Card -->
+  <!-- Kartu Informasi Akademik -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <!-- Card Header -->
+  <!-- Header Kartu -->
       <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-5">
         <div class="flex items-center space-x-3">
           <div class="bg-white bg-opacity-20 p-2 rounded-lg">
@@ -230,7 +232,7 @@
         </div>
       </div>
 
-      <!-- Card Body -->
+  <!-- Isi Kartu -->
       <div class="p-6 space-y-6">
         <!-- Dosen Pembimbing -->
         <div class="form-group" data-required="true">
@@ -340,7 +342,7 @@
 </div>
 
 <script>
-// Handle other option selection for pembiayaan
+// Tangani pilihan 'Yang lain' pada pembiayaan
 document.addEventListener('DOMContentLoaded', function() {
   const radioOptions = document.querySelectorAll('input[name="pembiayaan"]');
   const otherInputContainer = document.getElementById('input_lainnya_container');
@@ -358,9 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// ===== VALIDATION FUNCTIONS =====
+// ===== FUNGSI VALIDASI =====
 
-// 1. Validate Tahun Lulus
+// 1. Validasi Tahun Lulus
 function validateTahunLulus(input) {
   const currentYear = new Date().getFullYear();
   const value = parseInt(input.value);
@@ -378,7 +380,7 @@ function validateTahunLulus(input) {
   }
 }
 
-// 2. Validate NPM
+// 2. Validasi NPM
 function validateNPM(input) {
   input.setCustomValidity('');
   
@@ -390,7 +392,7 @@ function validateNPM(input) {
   }
 }
 
-// 3. Validate Nama
+// 3. Validasi Nama
 function validateNama(input) {
   const pattern = /^[a-zA-Z\s\.]+$/;
   input.setCustomValidity('');
@@ -405,7 +407,7 @@ function validateNama(input) {
   }
 }
 
-// 4. Validate Tanggal Lahir
+// 4. Validasi Tanggal Lahir
 function validateTanggalLahir(input) {
   const selectedDate = new Date(input.value);
   const today = new Date();
@@ -424,14 +426,14 @@ function validateTanggalLahir(input) {
   }
 }
 
-// 5. Format & Validate Telepon
+// 5. Format & Validasi Telepon
 function formatTelepon(input) {
-  // Remove all non-numeric except + at the beginning
   let value = input.value.replace(/[^\d\+]/g, '');
-  
-  // Ensure + only at the beginning
   if (value.includes('+') && !value.startsWith('+')) {
     value = value.replace(/\+/g, '');
+  }
+  if (value.length > 13) {
+    value = value.substring(0, 13);
   }
   
   input.value = value;
@@ -441,7 +443,7 @@ function formatTelepon(input) {
   input.setCustomValidity('');
   
   if (value && !pattern.test(value)) {
-    input.setCustomValidity('Format nomor Indonesia: 08xx, 62xx, atau +62xx (9-13 digit)');
+    input.setCustomValidity('Format nomor Indonesia: 08xx, 62xx, atau +62xx (maksimal 13 digit)');
     input.style.borderColor = '#ef4444';
   } else if (value.length > 0) {
     input.style.borderColor = '#10b981';
@@ -450,16 +452,13 @@ function formatTelepon(input) {
   }
 }
 
-// 6. Format & Validate NPWP - Smart Version
+// 6. Format & Validasi NPWP
 function formatNPWPSmart(input) {
-  // Get cursor position before formatting
   const cursorPosition = input.selectionStart;
   let value = input.value;
   
-  // Remove all non-numeric characters to get clean digits
+  // Hapus semua karakter non-numerik untuk mendapatkan digit bersih
   const cleanValue = value.replace(/[^\d]/g, '');
-  
-  // Limit to maximum 15 digits
   if (cleanValue.length > 15) {
     const limitedClean = cleanValue.substring(0, 15);
     const formatted = formatNPWPDigits(limitedClean);
@@ -467,156 +466,57 @@ function formatNPWPSmart(input) {
     return;
   }
   
-  // Auto-format the clean digits
   const formatted = formatNPWPDigits(cleanValue);
   
-  // Calculate new cursor position
+  // Hitung posisi kursor baru
   let newCursorPos = cursorPosition;
   
-  // If we added characters (separators), adjust cursor position
+  // Jika kita menambahkan karakter (pemisah), sesuaikan posisi kursor
   const addedChars = formatted.length - value.length;
   if (addedChars > 0) {
     newCursorPos += addedChars;
   }
-  
-  // Update input value
   input.value = formatted;
-  
-  // Set cursor position after formatting
   setTimeout(() => {
     input.setSelectionRange(newCursorPos, newCursorPos);
   }, 0);
   
-  // Validate NPWP pattern (optional field)
+  // Validasi pola NPWP (field opsional)
   validateNPWPField(input, cleanValue, formatted);
 }
 
-// Helper function to format NPWP digits to XX.XXX.XXX.X-XXX.XXX
+// Fungsi pembantu: format digit NPWP ke XX.XXX.XXX.X-XXX.XXX
 function formatNPWPDigits(digits) {
   let formatted = '';
   
   for (let i = 0; i < digits.length; i++) {
-    // Add separators at specific positions
     if (i === 2 || i === 5 || i === 8) {
       formatted += '.';
     } else if (i === 9) {
       formatted += '-';
+    } else if (i === 12) {
+      formatted += '.';
     }
     formatted += digits[i];
   }
   
   return formatted;
 }
-
-// Helper function to validate NPWP field
 function validateNPWPField(input, cleanValue, formattedValue) {
   if (formattedValue) {
     const pattern = /^\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}$/;
     input.setCustomValidity('');
     
     if (cleanValue.length === 15 && pattern.test(formattedValue)) {
-      input.style.borderColor = '#10b981'; // Green for complete and valid
+  input.style.borderColor = '#10b981'; 
     } else if (cleanValue.length > 0) {
-      input.style.borderColor = '#f59e0b'; // Yellow for incomplete
+  input.style.borderColor = '#f59e0b';
     }
     
-    // Only show error if user has entered full 15 digits but format is wrong
-    if (cleanValue.length === 15 && !pattern.test(formattedValue)) {
-      input.setCustomValidity('Format NPWP: XX.XXX.XXX.X-XXX.XXX');
-      input.style.borderColor = '#ef4444'; // Red for error
-    }
-  } else {
-    input.style.borderColor = '';
-    input.setCustomValidity('');
-  }
-}
-
-// 6b. Original NPWP Format Function (keeping as backup)
-function formatNPWP(input) {
-  // Store cursor position
-  const cursorPosition = input.selectionStart;
-  const prevValue = input.getAttribute('data-prev-value') || '';
-  const currentValue = input.value;
-  
-  // Detect if user is deleting
-  const isDeleting = currentValue.length < prevValue.length;
-  
-  // Remove all non-numeric
-  let cleanValue = currentValue.replace(/[^\d]/g, '');
-  
-  // If user is deleting and cursor is at a separator, allow natural deletion
-  if (isDeleting && cursorPosition > 0) {
-    const charBeforeCursor = prevValue.charAt(cursorPosition - 1);
-    if (charBeforeCursor === '.' || charBeforeCursor === '-') {
-      // Don't reformat immediately, let user delete the separator
-      input.setAttribute('data-prev-value', currentValue);
-      return;
-    }
-  }
-  
-  // Auto-format to XX.XXX.XXX.X-XXX.XXX
-  let formattedValue = '';
-  
-  if (cleanValue.length > 0) {
-    formattedValue = cleanValue.substring(0, 2);
-    
-    if (cleanValue.length > 2) {
-      formattedValue += '.' + cleanValue.substring(2, 5);
-    }
-    
-    if (cleanValue.length > 5) {
-      formattedValue += '.' + cleanValue.substring(5, 8);
-    }
-    
-    if (cleanValue.length > 8) {
-      formattedValue += '.' + cleanValue.substring(8, 9);
-    }
-    
-    if (cleanValue.length > 9) {
-      formattedValue += '-' + cleanValue.substring(9, 12);
-    }
-    
-    if (cleanValue.length > 12) {
-      formattedValue += '.' + cleanValue.substring(12, 15);
-    }
-  }
-  
-  // Limit to maximum digits (15 digits total)
-  if (cleanValue.length > 15) {
-    formattedValue = formattedValue.substring(0, 20);
-  }
-  
-  // Set the formatted value
-  input.value = formattedValue;
-  
-  // Restore cursor position intelligently
-  if (!isDeleting && formattedValue.length > cursorPosition) {
-    let newCursorPos = cursorPosition;
-    
-    // Adjust cursor position if we added a separator
-    const separatorsAdded = (formattedValue.match(/[\.\-]/g) || []).length - (prevValue.match(/[\.\-]/g) || []).length;
-    if (separatorsAdded > 0) {
-      newCursorPos += separatorsAdded;
-    }
-    
-    setTimeout(() => {
-      input.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
-  }
-  
-  // Store current value for next comparison
-  input.setAttribute('data-prev-value', formattedValue);
-  
-  // Validate NPWP pattern (optional field)
-  if (formattedValue) {
-    const pattern = /^\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}$/;
-    input.setCustomValidity('');
-    
+  // Tampilkan error hanya jika pengguna memasukkan 15 digit lengkap namun format salah
     if (cleanValue.length === 15 && !pattern.test(formattedValue)) {
       input.setCustomValidity('Format NPWP: XX.XXX.XXX.X-XXX.XXX');
       input.style.borderColor = '#ef4444';
-    } else if (cleanValue.length > 0) {
-      input.style.borderColor = '#10b981';
     }
   } else {
     input.style.borderColor = '';
@@ -624,7 +524,12 @@ function formatNPWP(input) {
   }
 }
 
-// 7. Validate Dosen Pembimbing
+// (Dihapus) Fungsi formatNPWP asli diganti oleh formatNPWPSmart.
+// Jika Anda ingin menyimpan fungsi cadangan, pertimbangkan memindahkannya ke file helper
+// atau beri komentar di repository. Fungsi ini dihapus untuk merapikan kode karena
+// tidak pernah dipanggil.
+
+// 7. Validasi Dosen Pembimbing
 function validateDosenPembimbing(input) {
   const pattern = /^[a-zA-Z\s\.,]+$/;
   input.setCustomValidity('');
@@ -639,9 +544,8 @@ function validateDosenPembimbing(input) {
   }
 }
 
-// Real-time validation on page load
+// Validasi real-time saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
-  // Add visual feedback for all required fields
   const requiredInputs = document.querySelectorAll('input[required], select[required]');
   
   requiredInputs.forEach(input => {
@@ -658,32 +562,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Enhanced NPWP field handling with natural deletion
+  // Penanganan field NPWP yang ditingkatkan dengan penghapusan alami
   const npwpField = document.getElementById('npwp');
   if (npwpField) {
-    // Remove any existing event listeners and use only oninput
-    npwpField.removeAttribute('oninput');
-    
-    // Add single comprehensive input event listener
     npwpField.addEventListener('input', function(e) {
       formatNPWPSmart(this);
     });
     
-    // Add paste event listener to handle pasted content
+  // Tambah event listener untuk paste agar menangani konten yang ditempel
     npwpField.addEventListener('paste', function(e) {
       setTimeout(() => {
         formatNPWPSmart(this);
       }, 10);
     });
     
-    // Add focus event to show example
+  // Tambah event focus untuk menampilkan contoh
     npwpField.addEventListener('focus', function() {
       if (this.value === '') {
         this.placeholder = 'Ketik angka: otomatis jadi 01.234.567.8-901.234';
       }
     });
     
-    // Restore original placeholder on blur
+  // Kembalikan placeholder asli saat blur
     npwpField.addEventListener('blur', function() {
       this.placeholder = '01.234.567.8-901.234';
     });

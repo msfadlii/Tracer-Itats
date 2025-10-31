@@ -55,7 +55,6 @@ public function showForm(Request $request)
 
 public function storeForm(Request $request)
 {
-    // === Validasi input ===
     $validated = $request->validate([
         'tahun_lulus'       => ['required', 'integer', 'min:1980', 'max:'.(date('Y')+1)],
         'npm'               => ['required', 'regex:/^\d{12}$/', 'unique:alumnis,npm'],

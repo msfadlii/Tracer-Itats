@@ -21,25 +21,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// 🔐 Admin route group
+//Admin route group
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-    // 📊 Dashboard Admin
+    //Dashboard Admin
     Route::get('/dashboard', [DashboardController::class, 'showdashboard'])->name('dashboard');
 
-    // ❓ CRUD Pertanyaan
+    //CRUD Pertanyaan
     Route::resource('questions', QuestionController::class);
 
-    // ❓ CRUD Halaman Kuesioner
+    // CRUD Halaman Kuesioner
     Route::resource('page_kuesioners', HalamanKuesionerController::class);
 
-    // 📝 Jawaban Alumni - daftar & hapus
+    // awaban Alumni - daftar & hapus
     Route::get('alumni-answers', [AnswerController::class, 'showAnswers'])->name('alumni-answers.index');
     Route::delete('alumni-answers/{idPengisian}', [AnswerController::class, 'destroyBySubmission'])->name('alumni_answers.destroy');
   
     // Sudah di dalam prefix('admin') dan name('admin.')
     Route::get('alumni_answers/detail/{id}', [AnswerController::class, 'detailJawaban'])->name('alumni_answers.detail');
 
-    // 📈 Statistik & Laporan
+    // Statistik & Laporan
     Route::get('reports', [ReportController::class, 'showReport'])->name('reports.showReport');
 });
 
@@ -50,7 +50,7 @@ Route::get('/alumni/form', [AlumniFormController::class, 'showForm'])->name('For
 Route::post('/alumni/form', [AlumniFormController::class, 'storeForm'])->name('alumni.form.submit');
 
 Route::get('/formulir/sukses', function () {
-    return view('alumni.success'); // atau sesuai view yang kamu punya
+    return view('alumni.success'); 
 })->name('alumni.form.success');
 
 
