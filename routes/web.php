@@ -53,5 +53,8 @@ Route::get('/formulir/sukses', function () {
     return view('alumni.success'); 
 })->name('alumni.form.success');
 
+Route::fallback(function () {
+    abort(404, 'Halaman tidak ditemukan');
+});
 
 require __DIR__.'/auth.php';

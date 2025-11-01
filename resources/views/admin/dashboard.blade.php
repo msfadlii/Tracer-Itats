@@ -1,87 +1,208 @@
 <x-app-layout>
   <x-slot name="header">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-semibold text-gray-900">Dashboard Alumni Teknik Informatika</h1>
-        <p class="mt-1 text-sm text-gray-500">Analisis karir alumni program studi Teknik Informatika</p>
+    <div class="flex items-center space-x-4">
+      <div class="flex-shrink-0">
+        <div
+          class="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </div>
       </div>
-      <form method="GET" action="{{ route('admin.dashboard') }}" class="flex gap-2">
-        <select name="tahun" class="border border-gray-300 rounded-lg text-sm py-2 px-3">
-          <option value="">Semua Tahun</option>
-          @foreach ($tahunOptions as $t)
-        <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>{{ $t }}</option>
-      @endforeach
-        </select>
-        <select name="status" class="border border-gray-300 rounded-lg text-sm py-2 px-3">
-          <option value="">Semua Status</option>
-          <option value="Bekerja" {{ request('status') == 'Bekerja' ? 'selected' : '' }}>Bekerja</option>
-          <option value="Wiraswasta" {{ request('status') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
-          <option value="Melanjutkan Studi" {{ request('status') == 'Melanjutkan Studi' ? 'selected' : '' }}>Melanjutkan
-            Studi</option>
-          <option value="Mencari Kerja" {{ request('status') == 'Mencari Kerja' ? 'selected' : '' }}>Mencari Kerja
-          </option>
-        </select>
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">Terapkan</button>
-      </form>
+      <div>
+        <h2 class="font-bold text-2xl text-gray-800 leading-tight">
+          Dashboard Alumni
+        </h2>
+        <p class="text-sm text-gray-600 mt-1">Analisis karir alumni program studi Teknik Informatika</p>
+      </div>
     </div>
   </x-slot>
 
-  <div class="bg-gray-50 py-6 px-4 text-gray-800">
-    <div class="max-w-7xl mx-auto space-y-6">
+  <div class="py-8">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-      <!-- Ringkasan -->
-      <div class="flex flex-wrap gap-5">
-        <div class="flex-1 min-w-[200px] max-w-sm">
-          <x-summary-card label="Total Alumni" :value="$alumni" icon="users" color="blue" />
+      <!-- Filter Section -->
+      <div class="bg-white shadow-lg rounded-xl border border-gray-100 p-6 mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">Filter Data</h3>
+            <p class="text-sm text-gray-600">Pilih tahun dan status untuk melihat data spesifik</p>
+          </div>
+          <form method="GET" action="{{ route('admin.dashboard') }}" class="flex flex-wrap gap-3">
+            <div class="flex flex-col">
+              <label class="text-xs font-medium text-gray-600 mb-1">Tahun Lulus</label>
+              <select name="tahun"
+                class="border border-gray-300 rounded-lg text-sm py-2.5 px-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                <option value="">Semua Tahun</option>
+                @foreach ($tahunOptions as $t)
+                  <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>{{ $t }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="flex flex-col">
+              <label class="text-xs font-medium text-gray-600 mb-1">Status Kerja</label>
+              <select name="status"
+                class="border border-gray-300 rounded-lg text-sm py-2.5 px-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                <option value="">Semua Status</option>
+                <option value="Bekerja" {{ request('status') == 'Bekerja' ? 'selected' : '' }}>Bekerja</option>
+                <option value="Wiraswasta" {{ request('status') == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta</option>
+                <option value="Melanjutkan Studi" {{ request('status') == 'Melanjutkan Studi' ? 'selected' : '' }}>
+                  Melanjutkan Studi</option>
+                <option value="Mencari Kerja" {{ request('status') == 'Mencari Kerja' ? 'selected' : '' }}>Mencari Kerja
+                </option>
+              </select>
+            </div>
+            <div class="flex flex-col justify-end">
+              <button
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
+                </svg>
+                <span>Terapkan Filter</span>
+              </button>
+            </div>
+          </form>
         </div>
-        <div class="flex-1 min-w-[200px] max-w-sm">
-          <x-summary-card label="Alumni Bekerja" :value="$alumniBekerja" icon="briefcase" color="green" />
-        </div>
-        <div class="flex-1 min-w-[200px] max-w-sm">
-          <x-summary-card label="Rata-rata Gaji" :value="$gajiAvg ? 'Rp' . number_format($gajiAvg, 0, ',', '.') : 'N/A'"
-            icon="money-bill-wave" color="purple" />
-        </div>
-              
       </div>
 
-      <!-- Chart 1 & 2 -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow border">
-          <h3 class="text-lg font-semibold mb-4">Distribusi Status Pekerjaan Alumni</h3>
-          <div class="relative h-[250px] overflow-x-auto">
-            <canvas id="statusChart" class="h-full w-full min-w-[300px]"></canvas>
+      <!-- Summary Statistics -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg overflow-hidden">
+          <div class="p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-blue-100 text-sm font-medium">Total Alumni</p>
+                <p class="text-3xl font-bold">{{ $alumni }}</p>
+                <p class="text-blue-100 text-sm mt-1">Terdaftar dalam sistem</p>
+              </div>
+              <div class="h-16 w-16 bg-white/20 rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow border">
-          <h3 class="text-lg font-semibold mb-4">Alumni per Angkatan</h3>
-          <div class="relative h-[250px] overflow-x-auto">
-            <canvas id="angkatanChart" class="h-full w-full min-w-[300px]"></canvas>
+        <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl shadow-lg overflow-hidden">
+          <div class="p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-emerald-100 text-sm font-medium">Alumni Bekerja</p>
+                <p class="text-3xl font-bold">{{ $alumniBekerja }}</p>
+                <p class="text-emerald-100 text-sm mt-1">
+                  {{ $alumni > 0 ? number_format(($alumniBekerja / $alumni) * 100, 1) : 0 }}% dari total alumni</p>
+              </div>
+              <div class="h-16 w-16 bg-white/20 rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 112 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 112-2V6z" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Chart 3 & Top Perusahaan -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-xl shadow border">
-          <h3 class="text-lg font-semibold mb-4">Top 5 Perusahaan dengan Alumni Terbanyak</h3>
-          <ul class="divide-y divide-gray-100 text-sm">
-            @forelse ($topPerusahaan as $i => $p)
-        <li class="py-2 flex justify-between">
-          <span>{{ $i + 1 }}. {{ $p->nama_perusahaan }}</span>
-          <span class="text-gray-500">{{ $p->total }} alumni</span>
-        </li>
-      @empty
-        <li class="py-2 text-gray-400">Belum ada data perusahaan</li>
-      @endforelse
-          </ul>
+      <!-- Charts Section -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+        <!-- Status Pekerjaan Chart -->
+        <div class="xl:col-span-2 bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+              <div class="h-8 w-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-800">Distribusi Status Pekerjaan Alumni</h3>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="relative h-[280px] overflow-x-auto">
+              <canvas id="statusChart" class="h-full w-full min-w-[300px]"></canvas>
+            </div>
+          </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow border">
-          <h3 class="text-lg font-semibold mb-4">Tren Gaji Rata-rata per Tahun</h3>
-          <div class="relative h-[250px] overflow-x-auto">
-            <canvas id="gajiChart" class="h-full w-full min-w-[300px]"></canvas>
+        <!-- Alumni per Angkatan Chart -->
+        <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+              <div class="h-8 w-8 bg-indigo-500 rounded-lg flex items-center justify-center">
+                <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-800">Alumni per Angkatan</h3>
+            </div>
           </div>
+          <div class="p-6">
+            <div class="relative h-[280px] overflow-x-auto">
+              <canvas id="angkatanChart" class="h-full w-full min-w-[300px]"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Companies Section -->
+      <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+          <div class="flex items-center space-x-3">
+            <div class="h-8 w-8 bg-emerald-500 rounded-lg flex items-center justify-center">
+              <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Top 5 Perusahaan dengan Alumni Terbanyak</h3>
+              <p class="text-sm text-gray-600">Perusahaan favorit alumni berdasarkan jumlah karyawan</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          @if($topPerusahaan->isNotEmpty())
+            <div class="space-y-4">
+              @foreach ($topPerusahaan as $i => $p)
+                <div
+                  class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors">
+                  <div class="flex items-center space-x-4">
+                    <div
+                      class="h-10 w-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                      <span class="text-white font-bold text-sm">{{ $i + 1 }}</span>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-800">{{ $p->nama_perusahaan }}</h4>
+                      <p class="text-sm text-gray-600">{{ $p->total }} alumni bekerja</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="h-2 w-20 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                        style="width: {{ ($p->total / $topPerusahaan->first()->total) * 100 }}%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">{{ $p->total }}</span>
+                  </div>
+                </div>
+              @endforeach
+            </div>
+          @else
+            <div class="text-center py-12">
+              <div class="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <p class="text-gray-500 text-sm">Belum ada data perusahaan</p>
+            </div>
+          @endif
         </div>
       </div>
 
