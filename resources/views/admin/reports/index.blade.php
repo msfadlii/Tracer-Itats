@@ -1,4 +1,3 @@
-
 <x-app-layout>
     <x-slot name="header">
         <div class="mb-6 flex items-start gap-4 animate-fancy-in">
@@ -114,16 +113,166 @@
                     border-radius: 1rem 1rem 0 0;
                 }
             }
+
+            /* Print Styles untuk Laporan */
+            @media print {
+
+                /* Hide semua elemen yang tidak perlu saat print */
+                .sidebar,
+                .navigation,
+                .print-hide,
+                form,
+                button,
+                input,
+                select,
+                .year-dropdown-container,
+                .choices,
+                .choices__inner,
+                .choices__list--dropdown,
+                [x-cloak],
+                [x-data] {
+                    display: none !important;
+                }
+
+                /* Header print yang bersih */
+                .print-header {
+                    display: block !important;
+                    text-align: center;
+                    margin-bottom: 30px;
+                    padding-bottom: 15px;
+                    border-bottom: 2px solid #333;
+                }
+
+                /* Container utama untuk print */
+                .print-container {
+                    width: 100% !important;
+                    max-width: none !important;
+                    margin: 0 !important;
+                    padding: 20px !important;
+                    background: white !important;
+                    box-shadow: none !important;
+                    border-radius: 0 !important;
+                }
+
+                /* Chart styling untuk print */
+                #chart-container {
+                    margin: 20px 0 !important;
+                    page-break-inside: avoid;
+                }
+
+                #chart {
+                    max-width: 100% !important;
+                    height: auto !important;
+                    display: block !important;
+                }
+
+                /* Typography untuk print */
+                h1,
+                h2,
+                h3 {
+                    color: #000 !important;
+                    page-break-after: avoid;
+                }
+
+                p,
+                div {
+                    color: #000 !important;
+                }
+
+                /* Informasi filter yang dipilih */
+                .print-info {
+                    display: block !important;
+                    margin: 20px 0;
+                    padding: 15px;
+                    border: 1px solid #ddd;
+                    background: #f9f9f9;
+                    page-break-inside: avoid;
+                }
+
+                /* Footer print */
+                .print-footer {
+                    display: block !important;
+                    margin-top: 30px;
+                    padding-top: 15px;
+                    border-top: 1px solid #333;
+                    text-align: center;
+                    font-size: 12px;
+                }
+
+                /* Page breaks */
+                .page-break {
+                    page-break-before: always;
+                }
+
+                /* Orientation landscape untuk chart yang besar */
+                @page {
+                    size: A4 landscape;
+                    margin: 1cm;
+                }
+            }
+
+            /* Print elements yang disembunyikan secara default */
+            .print-only {
+                display: none;
+            }
+
+            @media print {
+                .print-only {
+                    display: block !important;
+                }
+            }
         </style>
     </x-slot>
 
-    <div class="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white text-gray-900 py-6 px-4 sm:px-6 lg:px-8 transition-all duration-300">
+    <div
+        class="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white text-gray-900 py-6 px-4 sm:px-6 lg:px-8 transition-all duration-300">
         <div class="w-full space-y-10 transition-all duration-300">
 
+            <!-- Print Header (hanya muncul saat print) -->
+            <div class="print-only print-header">
+                <h1 style="font-size: 24px; font-weight: bold; margin: 0;">LAPORAN STATISTIK TRACER STUDY</h1>
+                <p style="font-size: 16px; margin: 10px 0;">Institut Teknologi Adhi Tama Surabaya</p>
+                <p style="font-size: 14px; margin: 5px 0;">Dicetak pada: {{ date('d F Y, H:i') }} WIB</p>
+            </div>
+
+            <!-- Print Info (hanya muncul saat print) -->
+            <div class="print-only print-info">
+                <h3 style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">Informasi Filter:</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <strong>Jenis Chart:</strong> {{ ucfirst($chartType ?? 'Bar') }}
+                    </div>
+                    <div>
+                        <strong>Tahun Lulus:</strong>
+                        @if(!empty($selectedYears))
+                            {{ implode(', ', $selectedYears) }}
+                        @else
+                            Semua Tahun
+                        @endif
+                    </div>
+                    <div>
+                        <strong>Kategori:</strong>
+                        @if(!empty($category))
+                            {{ $category }}
+                        @else
+                            Belum dipilih
+                        @endif
+                    </div>
+                    <div>
+                        <strong>Pertanyaan:</strong>
+                        @if(!empty($subcategory))
+                            {{ $subcategory }}
+                        @else
+                            Belum dipilih
+                        @endif
+                    </div>
+                </div>
+            </div>
+
             <!-- FILTER PANEL -->
-            <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+            <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-2xl p-6 shadow-lg print-container">
                 <div class="w-full form-container" style="overflow: visible;">
-                   
+
                     <form method="GET" action="{{ route('admin.reports.showReport') }}"
                         class="space-y-6 w-full relative">
 
@@ -131,13 +280,17 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {{-- Jenis Chart --}}
                             <div class="flex flex-col">
-                                <label for="chart_type" class="mb-2 text-sm font-semibold text-gray-700">Jenis Chart</label>
+                                <label for="chart_type" class="mb-2 text-sm font-semibold text-gray-700">Jenis
+                                    Chart</label>
                                 <select name="chart_type" id="chart_type"
                                     class="bg-white text-gray-900 border border-gray-300 rounded-md px-4 py-3 shadow-sm 
                                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                                    <option value="line" {{ request('chart_type') == 'line' ? 'selected' : '' }}>Line</option>
-                                    <option value="bar" {{ request('chart_type') == 'bar' ? 'selected' : '' }}>Bar</option>
-                                    <option value="pie" {{ request('chart_type') == 'pie' ? 'selected' : '' }}>Pie</option>
+                                    <option value="line" {{ request('chart_type') == 'line' ? 'selected' : '' }}>Line
+                                    </option>
+                                    <option value="bar" {{ request('chart_type') == 'bar' ? 'selected' : '' }}>Bar
+                                    </option>
+                                    <option value="pie" {{ request('chart_type') == 'pie' ? 'selected' : '' }}>Pie
+                                    </option>
                                 </select>
                             </div>
 
@@ -147,19 +300,20 @@
 
                                 {{-- Debug info (hapus setelah testing) --}}
                                 {{-- <div class="mb-2 p-2 bg-yellow-50 text-xs rounded" x-show="true">
-                                    <strong>Debug:</strong> 
+                                    <strong>Debug:</strong>
                                     <span x-text="'Selected: ' + JSON.stringify(selected)"></span><br>
                                     <span x-text="'All Years: ' + JSON.stringify(allYears)"></span>
                                 </div> --}}
 
                                 <div class="relative">
-                                    <button @click="open = !open" type="button"
-                                        class="w-full flex justify-between items-center bg-white text-gray-900 border border-gray-300 rounded-md px-4 py-3 shadow-sm
+                                    <button @click="open = !open" type="button" class="w-full flex justify-between items-center bg-white text-gray-900 border border-gray-300 rounded-md px-4 py-3 shadow-sm
                                         focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                        <span x-text="selected.length ? `${selected.length} tahun dipilih` : 'Pilih Tahun'"></span>
+                                        <span
+                                            x-text="selected.length ? `${selected.length} tahun dipilih` : 'Pilih Tahun'"></span>
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             class="h-5 w-5 text-gray-500 transition-transform duration-300"
-                                            :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M19 9l-7 7-7-7" />
                                         </svg>
@@ -172,12 +326,11 @@
                                         x-transition:enter-end="opacity-100 transform scale-100"
                                         x-transition:leave="transition ease-in duration-150"
                                         x-transition:leave-start="opacity-100 transform scale-100"
-                                        x-transition:leave-end="opacity-0 transform scale-95"
-                                    >
+                                        x-transition:leave-end="opacity-0 transform scale-95">
 
                                         {{-- Search --}}
                                         <div class="p-3 border-b border-gray-200 bg-gray-50">
-                                            <input x-model="search" type="text" placeholder="Cari tahun..." 
+                                            <input x-model="search" type="text" placeholder="Cari tahun..."
                                                 class="w-full bg-white text-gray-900 border border-gray-300 rounded-md px-3 py-2
                                                 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-sm" />
                                         </div>
@@ -188,19 +341,22 @@
                                                 <template x-for="year in filtered" :key="year">
                                                     <li @click="toggle(year)"
                                                         class="flex items-center px-4 py-3 cursor-pointer hover:bg-blue-50 select-none transition-colors">
-                                                        <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 rounded"
+                                                        <input type="checkbox"
+                                                            class="form-checkbox h-4 w-4 text-blue-600 rounded"
                                                             :checked="isSelected(year)" @click.stop="toggle(year)" />
                                                         <span class="ml-3 text-gray-900 text-sm" x-text="year"></span>
                                                     </li>
                                                 </template>
                                                 <template x-if="filtered.length === 0">
-                                                    <li class="px-4 py-3 text-gray-500 italic text-sm text-center">Tidak ada hasil</li>
+                                                    <li class="px-4 py-3 text-gray-500 italic text-sm text-center">Tidak
+                                                        ada hasil</li>
                                                 </template>
                                             </ul>
                                         </div>
 
                                         {{-- Footer --}}
-                                        <div class="flex justify-between items-center px-4 py-3 border-t border-gray-200 bg-gray-50">
+                                        <div
+                                            class="flex justify-between items-center px-4 py-3 border-t border-gray-200 bg-gray-50">
                                             <button @click="selectAll()" type="button"
                                                 class="text-blue-600 hover:text-blue-800 hover:underline focus:outline-none text-sm font-medium">
                                                 Pilih Semua
@@ -219,60 +375,62 @@
                                 </template>
                             </div>
 
-                        <!-- Row 2: Halaman Kuesioner dan Pertanyaan -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            {{-- Halaman Kuesioner --}}
-                            <div class="flex flex-col">
-                                <label for="halaman_id" class="mb-2 text-sm font-semibold text-gray-700">Kategori (Halaman)</label>
-                                <select name="halaman_id" id="halaman_id"
-                                    class="bg-white text-gray-900 border border-gray-300 rounded-md px-4 py-3 shadow-sm
-                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                    onchange="this.form.submit()">
-                                    <option value="" disabled {{ empty($halamanId) ? 'selected' : '' }}>-- Pilih Halaman --</option>
-                                    @foreach ($halamanKuesioners as $halaman)
-                                        <option value="{{ $halaman->id }}" {{ ($halamanId == $halaman->id) ? 'selected' : '' }}>
-                                            {{ $halaman->judul }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            {{-- Subkategori: Pertanyaan --}}
-                            @if ($pertanyaans->isNotEmpty())
+                            <!-- Row 2: Halaman Kuesioner dan Pertanyaan -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                {{-- Halaman Kuesioner --}}
                                 <div class="flex flex-col">
-                                    <label for="pertanyaan_id" class="mb-2 text-sm font-semibold text-gray-700">Pilih Pertanyaan</label>
-                                    <select name="pertanyaan_id" id="pertanyaan_id"
+                                    <label for="halaman_id" class="mb-2 text-sm font-semibold text-gray-700">Kategori
+                                        (Halaman)</label>
+                                    <select name="halaman_id" id="halaman_id"
                                         class="bg-white text-gray-900 border border-gray-300 rounded-md px-4 py-3 shadow-sm
-                                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                        onchange="this.form.submit()">
-                                        <option value="" disabled {{ empty($pertanyaanId) ? 'selected' : '' }}>-- Pilih Pertanyaan --</option>
-                                        @foreach ($pertanyaans as $pertanyaan)
-                                            <option value="{{ $pertanyaan->id }}" {{ ($pertanyaanId == $pertanyaan->id) ? 'selected' : '' }}>
-                                                {{ $pertanyaan->teks }}
+                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" onchange="this.form.submit()">
+                                        <option value="" disabled {{ empty($halamanId) ? 'selected' : '' }}>-- Pilih
+                                            Halaman --</option>
+                                        @foreach ($halamanKuesioners as $halaman)
+                                            <option value="{{ $halaman->id }}" {{ ($halamanId == $halaman->id) ? 'selected' : '' }}>
+                                                {{ $halaman->judul }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
-                            @else
-                                <div class="flex flex-col">
-                                    <label class="mb-2 text-sm font-semibold text-gray-400">Pilih Pertanyaan</label>
-                                    <div class="bg-gray-100 text-gray-500 border border-gray-200 rounded-md px-4 py-3 text-center italic">
-                                        Pilih halaman terlebih dahulu
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
 
-                        {{-- Tombol Submit - Selalu Tampil --}}
-                        <div class="flex justify-center pt-4 border-t border-gray-200">
-                            <button type="submit"
-                                class="w-full sm:w-auto min-w-[200px] bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold px-8 py-3 rounded-lg shadow-lg
+                                {{-- Subkategori: Pertanyaan --}}
+                                @if ($pertanyaans->isNotEmpty())
+                                    <div class="flex flex-col">
+                                        <label for="pertanyaan_id" class="mb-2 text-sm font-semibold text-gray-700">Pilih
+                                            Pertanyaan</label>
+                                        <select name="pertanyaan_id" id="pertanyaan_id"
+                                            class="bg-white text-gray-900 border border-gray-300 rounded-md px-4 py-3 shadow-sm
+                                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" onchange="this.form.submit()">
+                                            <option value="" disabled {{ empty($pertanyaanId) ? 'selected' : '' }}>-- Pilih
+                                                Pertanyaan --</option>
+                                            @foreach ($pertanyaans as $pertanyaan)
+                                                <option value="{{ $pertanyaan->id }}" {{ ($pertanyaanId == $pertanyaan->id) ? 'selected' : '' }}>
+                                                    {{ $pertanyaan->teks }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @else
+                                    <div class="flex flex-col">
+                                        <label class="mb-2 text-sm font-semibold text-gray-400">Pilih Pertanyaan</label>
+                                        <div
+                                            class="bg-gray-100 text-gray-500 border border-gray-200 rounded-md px-4 py-3 text-center italic">
+                                            Pilih halaman terlebih dahulu
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- Tombol Submit - Selalu Tampil --}}
+                            <div class="flex justify-center pt-4 border-t border-gray-200">
+                                <button type="submit" class="w-full sm:w-auto min-w-[200px] bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold px-8 py-3 rounded-lg shadow-lg
                                     hover:from-blue-700 hover:to-blue-900 focus:outline-none focus:ring-4 focus:ring-blue-500 transition-all duration-200
                                     transform hover:scale-105 active:scale-95">
-                                <i class="fa-solid fa-magnifying-glass mr-2"></i> 
-                                Tampilkan Data
-                            </button>
-                        </div>
+                                    <i class="fa-solid fa-magnifying-glass mr-2"></i>
+                                    Tampilkan Data
+                                </button>
+                            </div>
 
                     </form>
 
@@ -292,7 +450,8 @@
                 </div>
 
                 <!-- DOWNLOAD SECTION -->
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 w-full flex-wrap mt-10">
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 w-full flex-wrap mt-10 print-hide">
                     <div class="flex items-center space-x-4">
                         <label class="font-medium text-sm text-gray-700">Format Download</label>
                         <select id="download_format"
@@ -314,6 +473,13 @@
                             <i class="fa-solid fa-print mr-2"></i> Cetak Laporan
                         </button>
                     </div>
+                </div>
+
+                <!-- Print Footer (hanya muncul saat print) -->
+                <div class="print-only print-footer">
+                    <p style="margin: 5px 0;">© {{ date('Y') }} Institut Teknologi Adhi Tama Surabaya</p>
+                    <p style="margin: 5px 0; font-style: italic;">Sistem Tracer Study Alumni - Laporan digenerate
+                        otomatis</p>
                 </div>
 
             </div>
@@ -423,7 +589,7 @@
         const chartTypeSelect = document.getElementById('chart_type');
         if (chartTypeSelect) {
             chartTypeSelect.value = '{{ $chartType }}';
-                renderChart('{{ $chartType }}');
+            renderChart('{{ $chartType }}');
 
 
             chartTypeSelect.addEventListener('change', function () {
@@ -466,33 +632,33 @@
                 allYears: @json($graduationYears),
                 selected: [],
                 search: '',
-                
+
                 init() {
                     // Ambil data dari server
                     const serverSelected = @json($selectedYears ?? []);
                     console.log('Server selected:', serverSelected);
                     console.log('All years:', this.allYears);
-                    
+
                     // Pastikan selected adalah array dan berisi integer
-                    this.selected = Array.isArray(serverSelected) ? 
-                        serverSelected.map(year => parseInt(year)) : 
+                    this.selected = Array.isArray(serverSelected) ?
+                        serverSelected.map(year => parseInt(year)) :
                         [];
-                        
+
                     console.log('Final selected:', this.selected);
                 },
-                
+
                 get filtered() {
                     return this.allYears.filter(year =>
                         year.toString().includes(this.search.toLowerCase())
                     );
                 },
-                
+
                 isSelected(year) {
                     const isSelected = this.selected.includes(parseInt(year));
                     console.log(`Year ${year} is selected:`, isSelected);
                     return isSelected;
                 },
-                
+
                 toggle(year) {
                     const yearInt = parseInt(year);
                     if (this.selected.includes(yearInt)) {
@@ -502,11 +668,11 @@
                     }
                     console.log('Selected after toggle:', this.selected);
                 },
-                
+
                 selectAll() {
                     this.selected = [...this.allYears];
                 },
-                
+
                 reset() {
                     this.selected = [];
                     this.search = '';

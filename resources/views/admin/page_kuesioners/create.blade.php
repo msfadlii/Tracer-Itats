@@ -31,8 +31,20 @@
                 <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <h3 class="text-lg font-semibold text-blue-800 mb-2">
                         <i class="fas fa-info-circle mr-2"></i>
-                        Informasi Kuesioner
+                        Informasi halaman Kuesioner
                     </h3>
+                    <p class="text-sm text-blue-700 mb-3">
+                        Halaman yang Anda buat akan berisi pertanyaan-pertanyaan yang dapat dikonfigurasi untuk tampil
+                        berdasarkan status kerja alumni.
+                    </p>
+                    <div class="bg-blue-100 p-3 rounded-md">
+                        <p class="text-xs text-blue-600">
+                            <i class="fas fa-eye mr-1"></i>
+                            <strong>Kondisi Tampil:</strong> Saat membuat pertanyaan di halaman ini, Anda dapat mengatur
+                            agar pertanyaan hanya muncul untuk alumni dengan status kerja tertentu (Bekerja, Wiraswasta,
+                            Melanjutkan Pendidikan, dll.).
+                        </p>
+                    </div>
                 </div>
 
                 {{-- Form --}}
@@ -110,6 +122,49 @@
                         <li>• Deskripsi membantu responden memahami tujuan halaman</li>
                         <li>• Setelah membuat halaman, Anda dapat menambahkan pertanyaan</li>
                     </ul>
+                </div>
+
+                {{-- Status Condition Info --}}
+                <div class="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <h4 class="text-sm font-medium text-indigo-800 mb-2">
+                        <i class="fas fa-filter text-indigo-600 mr-2"></i>
+                        Kondisi Tampil Berdasarkan Status Kerja
+                    </h4>
+                    <div class="text-sm text-indigo-700 space-y-2">
+                        <p>
+                            <strong>Halaman ini akan menampilkan pertanyaan berdasarkan status kerja alumni:</strong>
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+                            <div class="flex items-center text-xs">
+                                <i class="fas fa-briefcase text-green-600 mr-2"></i>
+                                <span>Bekerja (full time/part time)</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i class="fas fa-store text-blue-600 mr-2"></i>
+                                <span>Wiraswasta</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i class="fas fa-graduation-cap text-purple-600 mr-2"></i>
+                                <span>Melanjutkan Pendidikan</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i class="fas fa-search text-orange-600 mr-2"></i>
+                                <span>Sedang Mencari Kerja</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i class="fas fa-clock text-gray-600 mr-2"></i>
+                                <span>Belum Memungkinkan Bekerja</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-indigo-100 rounded-md">
+                            <p class="text-xs text-indigo-600">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <strong>Catatan:</strong> Setiap pertanyaan dalam halaman ini dapat dikonfigurasi untuk
+                                tampil pada status kerja tertentu saat Anda membuat pertanyaan baru. Jika tidak ada
+                                kondisi yang dipilih, pertanyaan akan tampil untuk semua status.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -46,7 +46,7 @@
         <a href="{{ route('admin.page_kuesioners.index') }}"
             class="relative group flex p-3 rounded-md hover:bg-blue-400/20 transition-all items-center"
             :class="sidebarCollapsed ? 'justify-center pr-0 pl-2' : 'gap-3 justify-start'">
-            <i class="fas fa-question-circle w-5 h-3 text-white"></i>
+            <i class="fas fa-file-alt text-white"></i>
             <span x-show="!sidebarCollapsed" x-transition>Halaman Kuesioner</span>
         </a>
 

@@ -236,6 +236,10 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Kondisi Tampil Berdasarkan Status Kerja
             </label>
+            <p class="text-xs text-gray-600 mb-3">
+              <i class="fas fa-info-circle mr-1"></i>
+              Pilih status kerja yang akan menampilkan pertanyaan ini. Jika tidak ada yang dipilih, pertanyaan akan tampil untuk semua status.
+            </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               @foreach($statusList as $status)
                 <div class="flex items-center">
@@ -247,6 +251,12 @@
                   </label>
                 </div>
               @endforeach
+            </div>
+            <div class="mt-3 p-3 bg-blue-50 rounded-md border border-blue-200">
+              <p class="text-xs text-blue-700">
+                <i class="fas fa-lightbulb mr-1"></i>
+                <strong>Contoh:</strong> Jika Anda hanya memilih "Bekerja (full time/part time)", maka pertanyaan ini hanya akan muncul ketika alumni memilih status tersebut saat mengisi kuesioner.
+              </p>
             </div>
           </div>
 

@@ -7,7 +7,7 @@
     </a>
 
     <a href="{{ route('admin.page_kuesioners.index') }}" class="flex flex-col items-center text-xs hover:text-blue-300 transition-all">
-        <i class="fas fa-question-circle text-lg"></i>
+        <i class="fas fa-file-alt text-white"></i>
         <span>Halaman Kuesioner</span>
     </a>
 

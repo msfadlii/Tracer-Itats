@@ -20,12 +20,14 @@
             @case('text')
                 <input type="text" name="answers[{{ $pertanyaan->id }}]"
                     {{ $pertanyaan->wajib ? 'required' : '' }}
+                    data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                     class="w-full md:w-1/2 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200">
                 @break
 
             @case('textarea')
                 <textarea name="answers[{{ $pertanyaan->id }}]" rows="4"
                     {{ $pertanyaan->wajib ? 'required' : '' }}
+                    data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"></textarea>
                 @break
 
@@ -38,6 +40,7 @@
                             id="jawaban_{{ $pertanyaan->id }}_{{ $index }}"
                             value="{{ $opsi->teks }}"
                             {{ $pertanyaan->wajib ? 'required' : '' }} 
+                            data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                             class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
                             onchange="handleOtherOption(this, {{ $pertanyaan->id }})">
                         <label for="jawaban_{{ $pertanyaan->id }}_{{ $index }}" class="ml-3 text-sm text-gray-700 cursor-pointer">
@@ -55,6 +58,7 @@
                                 id="jawaban_{{ $pertanyaan->id }}_lainnya"
                                 value="Lainnya"
                                 {{ $pertanyaan->wajib ? 'required' : '' }}
+                                data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                                 class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
                                 onchange="handleOtherOption(this, {{ $pertanyaan->id }})">
                         <label for="jawaban_{{ $pertanyaan->id }}_lainnya" class="ml-3 text-sm text-gray-700 cursor-pointer">
@@ -92,6 +96,7 @@
                             name="answers[{{ $pertanyaan->id }}][]" 
                             id="checkbox_{{ $pertanyaan->id }}_{{ $index }}"
                             value="{{ $opsi->teks }}"
+                            data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                             class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                             @checked(is_array(old('answers.' . $pertanyaan->id)) && in_array($opsi->teks, old('answers.' . $pertanyaan->id)))>
                         <label for="checkbox_{{ $pertanyaan->id }}_{{ $index }}" class="ml-3 text-sm text-gray-700 cursor-pointer">
@@ -108,7 +113,9 @@
                                 name="answers[{{ $pertanyaan->id }}][]" 
                                 id="checkbox_{{ $pertanyaan->id }}_lainnya"
                                 value="Lainnya"
+                                data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                                 class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                onchange="handleCheckboxOtherOption(this, {{ $pertanyaan->id }})"
                                 {{ $jawabanLainDipilih ? 'checked' : '' }}>
                             <label for="checkbox_{{ $pertanyaan->id }}_lainnya" class="ml-3 text-sm text-gray-700 cursor-pointer">
                                 Lainnya
@@ -137,6 +144,7 @@
             @case('select')
                 <select name="answers[{{ $pertanyaan->id }}]"
                     {{ $pertanyaan->wajib ? 'required' : '' }}
+                    data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                     class="w-full md:w-1/2 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200">
                     <option value="">-- Pilih --</option>
                     @foreach ($pertanyaan->opsiJawabans as $opsi)
@@ -175,6 +183,7 @@
                                                 name="answers[{{ $pertanyaan->id }}]" 
                                                 value="{{ $opsi->teks }}"
                                                 {{ $pertanyaan->wajib ? 'required' : '' }} 
+                                                data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                                                 class="sr-only peer">
 
                                             <div class="w-6 h-6 bg-white border-2 border-gray-300 rounded-full 
@@ -227,6 +236,7 @@
                                         name="matrix_answers[{{ $pertanyaan->id }}][{{ $baris->id }}]"
                                         value="{{ $col }}"
                                         {{ $pertanyaan->wajib ? 'required' : '' }}
+                                        data-required="{{ $pertanyaan->wajib ? 'true' : 'false' }}"
                                         class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300">
                                 </label>
                             </td>
@@ -253,6 +263,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Handler untuk radio button "Lainnya"
   const allRadioInputs = document.querySelectorAll('input[type="radio"][name^="answers["]');
   allRadioInputs.forEach(radio => {
     radio.addEventListener('change', function () {
@@ -262,6 +273,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const container = document.getElementById('opsiLainInputContainer-' + id);
       const inputLain = document.getElementById('opsiLainInput-' + id);
+
+      if (!container || !inputLain) return;
 
       if (this.value === 'Lainnya') {
         container.classList.remove('hidden');
@@ -273,10 +286,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+
+  // Handler untuk checkbox "Lainnya"
   const checkboxes = document.querySelectorAll('input[type="checkbox"][id*="_lainnya"]');
 
   checkboxes.forEach(checkbox => {
@@ -311,4 +322,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+// Global functions untuk backward compatibility
+window.handleOtherOption = function(input, id) {
+  const isOther = input.value === "Lainnya";
+  const inputLain = document.getElementById(`opsiLainInput-${id}`);
+  const container = document.getElementById(`opsiLainInputContainer-${id}`);
+  
+  if (inputLain && container) {
+    container.classList.toggle('hidden', !isOther);
+    inputLain.required = isOther;
+    if (!isOther) inputLain.value = '';
+  }
+}
+
+window.handleCheckboxOtherOption = function(checkbox, id) {
+  const inputLain = document.getElementById(`opsiLainInput-${id}`);
+  const container = document.getElementById(`opsiLainInputContainer-${id}`);
+  
+  if (inputLain && container) {
+    container.classList.toggle('hidden', !checkbox.checked);
+    inputLain.required = checkbox.checked;
+    if (!checkbox.checked) inputLain.value = '';
+  }
+}
 </script>

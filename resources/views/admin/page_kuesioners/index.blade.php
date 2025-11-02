@@ -16,7 +16,26 @@
 
   <div class="py-8 bg-gray-50 min-h-screen text-gray-800">
     <div class="max-w-6xl mx-auto px-4">
-      
+
+      {{-- Info Panel --}}
+      <div class="mb-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+        <h3 class="text-sm font-semibold text-indigo-800 mb-2">
+          <i class="fas fa-info-circle mr-2"></i>
+          Informasi Halaman Kuesioner
+        </h3>
+        <p class="text-sm text-indigo-700 mb-2">
+          Setiap halaman dapat berisi pertanyaan yang ditampilkan berdasarkan status kerja alumni yang dipilih saat
+          mengisi kuesioner.
+        </p>
+        <div class="bg-indigo-100 p-3 rounded-md">
+          <p class="text-xs text-indigo-600">
+            <i class="fas fa-filter mr-1"></i>
+            <strong>Kondisi Tampil:</strong> Pertanyaan dalam halaman akan muncul secara dinamis sesuai dengan kondisi
+            status kerja yang dikonfigurasi di menu "Pertanyaan".
+          </p>
+        </div>
+      </div>
+
       {{-- Add Button --}}
       <div class="flex justify-between items-center mb-6">
         <div></div>
@@ -79,7 +98,8 @@
                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         {{ $halaman->urutan }}
                       </span>
                     </td>
@@ -93,11 +113,9 @@
                           <i class="fas fa-edit mr-1"></i>
                           Edit
                         </a>
-                        
-                        <form action="{{ route('admin.page_kuesioners.destroy', $halaman->id) }}" 
-                              method="POST" 
-                              class="inline-block"
-                              onsubmit="return confirm('Yakin ingin menghapus halaman ini?')">
+
+                        <form action="{{ route('admin.page_kuesioners.destroy', $halaman->id) }}" method="POST"
+                          class="inline-block" onsubmit="return confirm('Yakin ingin menghapus halaman ini?')">
                           @csrf
                           @method('DELETE')
                           <button type="submit"

@@ -65,7 +65,27 @@ class AnswerController extends Controller
             });
         }
 
+        // Search functionality - search in alumni data and answers
+        if ($search = request('search')) {
+            $kueriPengisian->where(function ($query) use ($search) {
+                $query->whereHas('alumni', function ($q) use ($search) {
+                    $q->where('nama', 'like', '%' . $search . '%')
+                      ->orWhere('npm', 'like', '%' . $search . '%')
+                      ->orWhere('email', 'like', '%' . $search . '%')
+                      ->orWhere('status', 'like', '%' . $search . '%')
+                      ->orWhere('tahun_lulus', 'like', '%' . $search . '%')
+                      ->orWhere('dosen_pembimbing', 'like', '%' . $search . '%');
+                })->orWhereHas('jawabanAlumni', function ($q) use ($search) {
+                    $q->where('jawaban', 'like', '%' . $search . '%');
+                });
+            });
+        }
+
+        // Get total count for all filtered data (before pagination)
+        $totalKeseluruhan = $kueriPengisian->count();
+        
         $daftarPengisian = $kueriPengisian->paginate(10)->withQueryString();
+        
         $dataAlumni = [];
 
         foreach ($daftarPengisian as $pengisian) {
@@ -109,6 +129,7 @@ class AnswerController extends Controller
             'pertanyaans' => $daftarPertanyaan,
             'pengisians' => $daftarPengisian,
             'dataAlumni' => $dataAlumni,
+            'totalKeseluruhan' => $totalKeseluruhan,
             'tahunLulusTersedia' => $daftarTahunLulus,
             'statusKerjaTersedia' => $daftarStatusKerja,
             'denganFilterPertanyaan' => $denganFilterPertanyaan,
