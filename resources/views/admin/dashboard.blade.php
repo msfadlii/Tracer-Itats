@@ -22,6 +22,38 @@
   <div class="py-8">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+      <!-- Reset Filter Success Notification -->
+      @if (session('filter_reset'))
+        <div id="filterResetToast" class="fixed top-4 right-4 z-50 max-w-sm w-full sm:max-w-md">
+          <div role="alert" aria-live="assertive" aria-atomic="true"
+            class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg shadow-lg flex items-start space-x-3"
+            style="animation: slideInFromRight 260ms ease-out;">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-start justify-between">
+                <h3 class="text-sm font-medium text-blue-800">Filter Direset!</h3>
+                <button id="closeFilterResetToast" type="button"
+                  class="ml-4 text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 rounded">
+                  <span class="sr-only">Tutup notifikasi</span>
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div class="mt-2 text-sm text-blue-700">
+                {{ session('filter_reset') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      @endif
+
       <!-- Filter Section -->
       <div class="bg-white shadow-lg rounded-xl border border-gray-100 p-6 mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -51,17 +83,28 @@
                   Melanjutkan Studi</option>
                 <option value="Mencari Kerja" {{ request('status') == 'Mencari Kerja' ? 'selected' : '' }}>Mencari Kerja
                 </option>
+                <option value="belum memungkinkan bekerja" {{ request('status') == 'belum memungkinkan bekerja' ? 'selected' : '' }}>Belum Memungkinkan Bekerja</option>
               </select>
             </div>
             <div class="flex flex-col justify-end">
-              <button
-                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
-                </svg>
-                <span>Terapkan Filter</span>
-              </button>
+              <div class="flex gap-2">
+                <button type="submit"
+                  class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
+                  </svg>
+                  <span>Terapkan Filter</span>
+                </button>
+                <a href="{{ route('admin.dashboard') }}"
+                  class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Reset</span>
+                </a>
+              </div>
             </div>
           </form>
         </div>
@@ -94,7 +137,8 @@
                 <p class="text-emerald-100 text-sm font-medium">Alumni Bekerja</p>
                 <p class="text-3xl font-bold">{{ $alumniBekerja }}</p>
                 <p class="text-emerald-100 text-sm mt-1">
-                  {{ $alumni > 0 ? number_format(($alumniBekerja / $alumni) * 100, 1) : 0 }}% dari total alumni</p>
+                  {{ $alumni > 0 ? number_format(($alumniBekerja / $alumni) * 100, 1) : 0 }}% dari total alumni
+                </p>
               </div>
               <div class="h-16 w-16 bg-white/20 rounded-full flex items-center justify-center">
                 <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,6 +342,58 @@
           }
         }
       });
+    });
+  </script>
+
+  <!-- Filter Reset Toast Styles and Script -->
+  <style>
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      #filterResetToast {
+        left: 12px !important;
+        right: 12px !important;
+        top: 12px !important;
+        max-width: calc(100% - 24px) !important;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Filter reset toast handling
+      const filterResetToast = document.getElementById('filterResetToast');
+      const closeFilterResetToastBtn = document.getElementById('closeFilterResetToast');
+
+      if (filterResetToast) {
+        // Auto-hide after 4 seconds
+        const hideFilterResetTimeout = setTimeout(() => {
+          filterResetToast.style.transition = 'opacity 220ms ease-out, transform 220ms ease-out';
+          filterResetToast.style.opacity = '0';
+          filterResetToast.style.transform = 'translateX(8px)';
+          setTimeout(() => filterResetToast.remove(), 240);
+        }, 4000);
+
+        if (closeFilterResetToastBtn) {
+          closeFilterResetToastBtn.addEventListener('click', function () {
+            clearTimeout(hideFilterResetTimeout);
+            filterResetToast.style.transition = 'opacity 160ms ease-out, transform 160ms ease-out';
+            filterResetToast.style.opacity = '0';
+            filterResetToast.style.transform = 'translateX(8px)';
+            setTimeout(() => filterResetToast.remove(), 180);
+          });
+        }
+      }
     });
   </script>
 </x-app-layout>

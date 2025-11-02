@@ -14,6 +14,14 @@ class DashboardController extends Controller
 {
     public function showdashboard(Request $request)
     {
+        // Check if this is a reset request (no filter parameters and came from reset button)
+        if (!$request->filled('tahun') && !$request->filled('status') && $request->headers->get('referer')) {
+            $referer = parse_url($request->headers->get('referer'), PHP_URL_QUERY);
+            if ($referer && (str_contains($referer, 'tahun=') || str_contains($referer, 'status='))) {
+                session()->flash('filter_reset', 'Filter data berhasil direset');
+            }
+        }
+
         $query = Alumni::query();
 
         if ($request->filled('tahun')) {
