@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'password' => ['required', 'string', 'min:5'],
         ];
     }
 
@@ -41,6 +41,7 @@ class LoginRequest extends FormRequest
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 5 karakter.',
         ];
     }
 
@@ -57,7 +58,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => 'Email atau password yang Anda masukkan salah. Silakan coba lagi.',
+                'email' => 'Email atau password yang Anda  salah. Silakan coba lagi.',
             ]);
         }
 
