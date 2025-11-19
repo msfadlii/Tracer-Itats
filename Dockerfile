@@ -1,58 +1,16 @@
-# ============================
-# 1) COMPOSER BUILD (CACHED)
-# ============================
-FROM composer:2.7 AS composer_build
-WORKDIR /app
-
-# Step untuk cache Composer
-COPY composer.json composer.lock ./
-RUN composer install --prefer-dist --no-progress --no-interaction || true
-
-# Copy seluruh project
-COPY . .
-
-# Install ulang untuk memastikan artisan ada
-RUN composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
-
-
-# ============================
-# 2) NODE BUILD (VITE)
-# ============================
-FROM node:20 AS node_build
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm install --silent
-
-COPY . .
-RUN npm run build
-
-
-# ============================
-# 3) FINAL PHP-FPM IMAGE
-# ============================
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 WORKDIR /var/www/html
 
 RUN apt-get update && apt-get install -y \
-    git unzip curl \
-    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql bcmath exif opcache
+    git unzip curl libzip-dev \
+    && docker-php-ext-install pdo_mysql bcmath
 
-# Copy source code
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --no-scripts
+
 COPY . .
 
-# Copy vendor
-COPY --from=composer_build /app/vendor ./vendor
-
-# Copy Vite build
-COPY --from=node_build /app/public/build ./public/build
-
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
-
-USER www-data
-
-CMD ["php-fpm"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
