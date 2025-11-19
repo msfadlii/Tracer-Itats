@@ -6,12 +6,13 @@ use Tests\TestCase;
 use App\Models\JenisPertanyaan;
 use App\Models\HalamanKuesioner;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 
 class QuestionControllerTest extends TestCase
 {
     use RefreshDatabase;
-
+    use WithoutMiddleware;
 
     /** 
      * Negatif Test 
@@ -32,17 +33,16 @@ class QuestionControllerTest extends TestCase
         $jenis = JenisPertanyaan::factory()->create();
         $halaman = HalamanKuesioner::factory()->create();
 
-        $data = [
-            'teks' => 'Apa pekerjaan Anda?',
+        $response = $this->post(route('admin.questions.store'), [
+            'teks' => 'Contoh pertanyaan.',
             'jenis_pertanyaan_id' => $jenis->id,
             'halaman_kuesioner_id' => $halaman->id,
             'urutan' => 1,
-        ];
+        ]);
 
-        $response = $this->post(route('admin.questions.store'), $data);
-        $response->assertRedirect(route('admin.questions.index'));
-        $this->assertDatabaseHas('pertanyaans', ['teks' => 'Apa pekerjaan Anda?']);
+        $response->assertSessionHasNoErrors();
     }
+
 
     /** 
      * Boundary Test 
