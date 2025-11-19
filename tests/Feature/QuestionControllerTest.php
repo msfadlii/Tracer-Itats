@@ -6,12 +6,13 @@ use Tests\TestCase;
 use App\Models\JenisPertanyaan;
 use App\Models\HalamanKuesioner;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 
 class QuestionControllerTest extends TestCase
 {
     use RefreshDatabase;
-
+    use WithoutMiddleware;
 
     /** 
      * Negatif Test 
