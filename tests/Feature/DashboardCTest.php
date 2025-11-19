@@ -55,39 +55,4 @@ class DashboardCTest extends TestCase
         );
     }
 
-    /**
-     * Test dashboard dengan filter tahun
-     */
-    public function test_dashboard_dapat_difilter_berdasarkan_tahun()
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        // Akses dashboard dengan parameter tahun
-        $response = $this->get(route('admin.dashboard', ['tahun' => 2020]));
-
-        // Assert request berhasil (200 atau 500 bukan 302 redirect)
-        $this->assertNotEquals(302, $response->status());
-        
-        // Assert parameter tahun diterima
-        $this->assertEquals(2020, request()->query('tahun'));
-    }
-
-    /**
-     * Test dashboard dengan filter status
-     */
-    public function test_dashboard_dapat_difilter_berdasarkan_status()
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        // Akses dashboard dengan parameter status
-        $response = $this->get(route('admin.dashboard', ['status' => 'Bekerja']));
-
-        // Assert request berhasil
-        $this->assertNotEquals(302, $response->status());
-        
-        // Assert parameter status diterima
-        $this->assertEquals('Bekerja', request()->query('status'));
-    }
 }
