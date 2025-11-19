@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
-    public function test_user_can_login_with_correct_credentials()
+    public function tes_login_email_pass_benar()
     {
         $response = $this->post('/login', [
             'email' => 'admin@itats.ac.id',
@@ -17,7 +17,7 @@ class LoginTest extends TestCase
         $response->assertRedirect('/dashboard');
     }
 
-    public function test_login_fails_with_wrong_password()
+    public function tes_login_password_salah()
     {
         $response = $this->from('/login')->post('/login', [
             'email' => 'admin@itats.ac.id',
@@ -29,7 +29,7 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_login_fails_with_password_below_minimum_boundary()
+    public function tes_login_password_dibawah_batas()
     {
         // Uji password dibawah batas (5 karakter)
         $response = $this->from('/login')->post('/login', [
