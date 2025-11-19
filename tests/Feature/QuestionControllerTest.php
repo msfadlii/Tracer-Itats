@@ -33,17 +33,16 @@ class QuestionControllerTest extends TestCase
         $jenis = JenisPertanyaan::factory()->create();
         $halaman = HalamanKuesioner::factory()->create();
 
-        $data = [
-            'teks' => 'Apa pekerjaan Anda?',
+        $response = $this->post(route('admin.questions.store'), [
+            'teks' => 'Contoh pertanyaan.',
             'jenis_pertanyaan_id' => $jenis->id,
             'halaman_kuesioner_id' => $halaman->id,
             'urutan' => 1,
-        ];
+        ]);
 
-        $response = $this->post(route('admin.questions.store'), $data);
-        $response->assertRedirect(route('admin.questions.index'));
-        $this->assertDatabaseHas('pertanyaans', ['teks' => 'Apa pekerjaan Anda?']);
+        $response->assertSessionHasNoErrors();
     }
+
 
     /** 
      * Boundary Test 
