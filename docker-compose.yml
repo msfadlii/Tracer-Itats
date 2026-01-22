@@ -1,39 +1,52 @@
 services:
+  # App Service (Laravel)
   app:
     build: .
     container_name: tc_app
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/var/www/html
-      - vendor:/var/www/html/vendor
-    depends_on:
-      - db
-
-  vite:
-    image: node:20
-    working_dir: /var/www/html
-    container_name: tc_vite
-    volumes:
-      - .:/var/www/html
-      - node_modules:/var/www/html/node_modules
-    ports:
-      - "5173:5173"
-    command: sh -c "npm install && npm run dev -- --host"
-
-  db:
-    image: mysql:8
-    container_name: tc_db
     restart: unless-stopped
+    # Environment di bawah menimpa file .env saat di dalam container
+    environment:
+      DB_HOST: db_main
+      DB_HOST_ANALYTICS: db_analytics
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor # Anonymous volume agar vendor build tidak hilang
+    depends_on:
+      - db_main
+      - db_analytics
+
+  # Web Server (Nginx) - Lebih profesional daripada 'php artisan serve'
+  nginx:
+    image: nginx:alpine
+    container_name: tc_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  # Database 1: Data Utama (Alumni, User)
+  db_main:
+    image: mysql:8
+    container_name: tc_db_main
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: tc
-    ports:
-      - "3306:3306"
+      MYSQL_DATABASE: tc_main
     volumes:
-      - dbdata:/var/lib/mysql
+      - db_main_data:/var/lib/mysql
+
+  # Database 2: Data Analitik (Kuesioner, Statistik) - WAJIB KELOMPOK 5
+  db_analytics:
+    image: mysql:8
+    container_name: tc_db_analytics
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tc_analytics
+    volumes:
+      - db_analytics_data:/var/lib/mysql
 
 volumes:
-  dbdata:
-  vendor:
-  node_modules:
+  db_main_data:
+  db_analytics_data:
