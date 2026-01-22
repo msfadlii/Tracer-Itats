@@ -1,0 +1,6 @@
+Strategi Monitoring dan Alerting Sistem Tracer Alumni
+I. Metrik Kesehatan Aplikasi (Health Monitoring) Pemantauan kesehatan aplikasi dilakukan secara berkelanjutan untuk memastikan ketersediaan layanan bagi alumni ITATS. Kami mengonfigurasi Health Check pada setiap container di dalam Docker Compose stack. Nginx sebagai gerbang utama dipantau status ketersediaannya, sementara container PHP-FPM dipantau untuk memastikan proses pemrosesan kode tidak mengalami deadlock saat menangani 1000+ data.
+
+II. Mekanisme Alerting (Build & Test Failures) Sistem notifikasi dikonfigurasi untuk memberikan peringatan segera jika terjadi kegagalan pada pipeline. Setiap build failure atau kegagalan unit test akan memicu alert otomatis yang dikirimkan ke tim pengembang. Hal ini memungkinkan respon cepat terhadap masalah kualitas kode sebelum dampak mencapai pengguna akhir.
+
+III. Log Aggregation dan Analisis Performa Seluruh log dari container aplikasi dan database (Main & Analytics) dikumpulkan secara terpusat untuk mempermudah proses investigasi jika terjadi anomali. Kami juga melacak metrik performa seperti penggunaan memori dan CPU untuk memastikan bahwa arsitektur database terpisah mampu menangani beban kerja analitik tanpa mengganggu integritas data operasional.

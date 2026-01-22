@@ -15,3 +15,7 @@ Masalah 3: Build Error (Exit Code 1) pada apk add
 Penyebab: Proses instalasi atau kompilasi ekstensi PHP terhenti karena kehabisan RAM atau koneksi internet yang tidak stabil saat mengunduh package dari repositori Alpine. Solusi:
 - Naikkan RAM WSL 2 melalui .wslconfig.
 - Gunakan flag -j$(nproc) pada perintah docker-php-ext-install di Dockerfile agar proses kompilasi menggunakan semua core CPU yang tersedia, yang dapat membantu stabilitas proses build.
+
+
+Masalah: Pipeline gagal pada tahap Run composer audit dengan pesan error keamanan.
+Solusi: Melakukan composer update pada paket terkait dan memastikan composer.lock diperbarui di repositori untuk melewati pemeriksaan keamanan pada build berikutnya.
