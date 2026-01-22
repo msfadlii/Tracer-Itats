@@ -31,11 +31,10 @@ class AlumniTest extends TestCase
     {
         $user = User::factory()->create();
 
-        // Menggunakan actingAs untuk bypass auth (302) 
-        // Menggunakan withoutMiddleware untuk bypass CSRF (419)
+        // Panggil langsung tanpa prefix /api
         $response = $this->actingAs($user)
-                         ->withoutMiddleware()
-                         ->get('/api/analytics/summary'); 
+                        ->withoutMiddleware()
+                        ->get('/analytics/summary'); 
 
         $response->assertStatus(200);
     }

@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/alumni/export', [AlumniController::class, 'export'])->name('alumni.export');
+Route::get('/analytics/summary', [AnalyticsController::class, 'summary']);
 
 //Admin route group
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
