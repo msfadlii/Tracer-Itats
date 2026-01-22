@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\AnswerController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\AlumniController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 // 🔁 Redirect halaman utama ke register
@@ -20,6 +22,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/alumni/export', [AlumniController::class, 'export'])->name('alumni.export');
+Route::get('/analytics/summary', [AnalyticsController::class, 'summary']);
 
 //Admin route group
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
