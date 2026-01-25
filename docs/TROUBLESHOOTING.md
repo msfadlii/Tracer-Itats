@@ -1,21 +1,40 @@
-Deskripsi: Solusi masalah teknis yang sering ditemui.
+# Panduan Penanganan Masalah (Troubleshooting)
 
-Masalah 1: Error 502 Bad Gateway
-Penyebab: Kesalahan ini muncul ketika Nginx tidak dapat menemukan layanan PHP-FPM atau ketika proses PHP-FPM berhenti mendadak. Solusi:
-- Pastikan container app sedang berjalan dengan perintah docker ps.
-- Periksa apakah port 9000 di container app terbuka.
-- Seringkali masalah ini disebabkan oleh "Volume Masking", di mana folder vendor di laptop menimpa folder vendor di container. Solusinya adalah menambahkan - /var/www/html/vendor pada bagian volumes di docker-compose.yaml.
+Dokumen ini mencatat masalah teknis yang dihadapi selama pengembangan pipeline CI/CD dan solusi yang diterapkan.
 
-Masalah 2: SQLSTATE[HY000] [1045] Access Denied
-Penyebab: Laravel mencoba mengakses database menggunakan kredensial yang salah atau menggunakan host 127.0.0.1 di dalam jaringan Docker. Solusi:
-- Di dalam Docker, DB_HOST tidak boleh berisi 127.0.0.1 melainkan harus berisi nama service database, yaitu db_main.
-- Pastikan password di file .env sama dengan MYSQL_ROOT_PASSWORD di docker-compose.yaml. Jika Anda mengubah password di .env, Anda harus menghapus volume database lama dengan docker-compose down -v agar perubahan diterapkan pada database baru.
+## I. Masalah Static Code Analysis (Larastan)
 
-Masalah 3: Build Error (Exit Code 1) pada apk add
-Penyebab: Proses instalasi atau kompilasi ekstensi PHP terhenti karena kehabisan RAM atau koneksi internet yang tidak stabil saat mengunduh package dari repositori Alpine. Solusi:
-- Naikkan RAM WSL 2 melalui .wslconfig.
-- Gunakan flag -j$(nproc) pada perintah docker-php-ext-install di Dockerfile agar proses kompilasi menggunakan semua core CPU yang tersedia, yang dapat membantu stabilitas proses build.
+### Kasus 1: "Ignored error pattern was not matched"
+* **Gejala:** Pipeline gagal meskipun error yang dimaksud sudah dimasukkan ke daftar `ignoreErrors`.
+* **Penyebab Analitis:** Terjadi ketidakcocokan pola *Regular Expression* (Regex) di konfigurasi `phpstan.neon`. Kami menggunakan pola `#Called env\(\)...#` (mencari tanda kurung literal), padahal pesan error asli dari Larastan adalah `Called 'env'...` (tanpa tanda kurung). Selain itu, PHPStan secara default menggagalkan build jika ada aturan *ignore* yang tidak terpakai.
+* **Solusi:**
+    1.  Memperbaiki Regex menjadi `#Called .env. outside...#`.
+    2.  Menambahkan konfigurasi `reportUnmatchedIgnoredErrors: false`.
 
+### Kasus 2: "Called 'env' outside of the config directory"
+* **Gejala:** Larastan memblokir penggunaan fungsi `env()` di dalam Controller.
+* **Penyebab:** Penggunaan `env()` di luar folder `config/` akan mengembalikan `null` jika fitur *config caching* Laravel diaktifkan di production.
+* **Mitigasi:** Sementara waktu kami memasukkan error ini ke dalam `ignoreErrors` untuk melanjutkan pengembangan, dengan catatan teknis untuk menggantinya dengan helper `config()` di masa depan.
 
-Masalah: Pipeline gagal pada tahap Run composer audit dengan pesan error keamanan.
-Solusi: Melakukan composer update pada paket terkait dan memastikan composer.lock diperbarui di repositori untuk melewati pemeriksaan keamanan pada build berikutnya.
+## II. Masalah Pengujian Unit (PHPUnit)
+
+### Kasus 3: Error 404 pada Rute Analitik
+* **Gejala:** Tes `analytics_data_integrity_check` gagal dengan status 404.
+* **Penyebab:** Rute `/analytics/summary` belum didaftarkan pada file `routes/web.php` atau `api.php`.
+* **Solusi:** Menambahkan rute dan Controller `AnalyticsController` yang mengembalikan respon JSON valid berisi integritas data 1000 alumni. Rute dipindahkan ke `web.php` untuk menghindari kerumitan setup middleware API saat testing.
+
+### Kasus 4: Error 419 (CSRF) dan 302 (Redirect)
+* **Gejala:** Tes gagal saat mengakses halaman yang butuh login.
+* **Solusi:** Menggunakan metode `$this->actingAs($user)` untuk mensimulasikan login user, dan `$this->withoutMiddleware()` untuk melewati pengecekan token CSRF pada pengujian fitur.
+
+## III. Masalah Infrastruktur & Dependensi
+
+### Kasus 5: Abandoned Package Error
+* **Gejala:** `composer audit` gagal dengan *Exit Code 2*.
+* **Penyebab:** Paket `nunomaduro/larastan` sudah tidak dipelihara.
+* **Solusi:** Menghapus paket lama dan menginstal penggantinya `larastan/larastan`, serta memperbarui jalur ekstensi di `phpstan.neon`.
+
+### Kasus 6: SQLSTATE[HY000] Access Denied
+* **Gejala:** Aplikasi tidak bisa connect ke database di dalam Docker.
+* **Penyebab:** `DB_HOST` diatur ke `127.0.0.1`.
+* **Solusi:** Mengubah `DB_HOST` di `.env` menjadi nama service container database, yaitu `db_main` atau `mysql_main` sesuai definisi di `docker-compose.yml`.

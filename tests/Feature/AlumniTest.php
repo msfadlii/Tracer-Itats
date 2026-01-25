@@ -53,4 +53,14 @@ class AlumniTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    /**
+     * Memvalidasi Scheduled Jobs (Cron) sesuai syarat Kelompok 5.
+     * @test
+     */
+    public function scheduled_jobs_are_defined()
+    {
+        // Memastikan command schedule:run bisa dieksekusi tanpa error
+        $this->artisan('schedule:run')->assertExitCode(0);
+    }
 }

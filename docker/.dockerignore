@@ -1,0 +1,20 @@
+# Abaikan folder git (menghemat size image)
+.git
+.gitignore
+
+# PENTING: Jangan masukkan file environment lokal (KEAMANAN)
+.env
+.env.example
+
+# Abaikan folder docker itu sendiri (bersih-bersih)
+docker
+
+# Abaikan folder build/test
+tests
+phpunit.xml
+phpstan.neon
+node_modules
+
+# Abaikan file markdown dokumentasi
+docs
+README.md

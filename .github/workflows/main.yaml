@@ -76,3 +76,26 @@ jobs:
       with:
         name: test-coverage-report
         path: build/coverage-report/
+        
+  # Job baru: Build & Push Docker Image (Tahap 4 Otomatisasi) 
+  build-and-push:
+    [cite_start]needs: test-and-quality # Hanya jalan kalau tes lulus [cite: 37]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # Hanya push dari branch main
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }} # Masukkan msfadd di GitHub Secrets
+          password: ${{ secrets.DOCKER_PASSWORD }} # Masukkan Token di GitHub Secrets
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: true
+          tags: msfadd/tracer-app:latest,msfadd/tracer-app:${{ github.sha }}
