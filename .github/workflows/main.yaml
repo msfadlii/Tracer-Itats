@@ -79,7 +79,7 @@ jobs:
         
   # Job baru: Build & Push Docker Image (Tahap 4 Otomatisasi) 
   build-and-push:
-    [cite_start]needs: test-and-quality # Hanya jalan kalau tes lulus [cite: 37]
+    needs: test-and-quality # Pastikan job ini berjalan setelah pengujian
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' # Hanya push dari branch main
 
