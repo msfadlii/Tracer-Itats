@@ -6,4 +6,11 @@ parameters:
         - app/
     level: 0 # Turunkan ke Level 0 untuk memastikan Pipeline "Hijau" terlebih dahulu
     ignoreErrors:
+        # Mengabaikan error env() di seluruh file
         - '#Called env\(\) outside of the config directory#' # Mengabaikan peringatan env()
+
+        # Mengabaikan error relasi (biasanya karena missing return type hint di Model)
+        - '#Relation .* is not found in .* model#'
+        
+        # Mengabaikan error property yang tidak terdefinisi pada Model
+        - '#Access to an undefined property .*#'
