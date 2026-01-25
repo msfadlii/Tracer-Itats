@@ -7,4 +7,3 @@ parameters:
     level: 0 # Turunkan ke Level 0 untuk memastikan Pipeline "Hijau" terlebih dahulu
     ignoreErrors:
         - '#Called env\(\) outside of the config directory#' # Mengabaikan peringatan env()
-    checkMissingIterableValueType: false
