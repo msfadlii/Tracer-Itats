@@ -91,8 +91,8 @@ jobs:
           DB_HOST_ANALYTICS: 127.0.0.1
           DB_PORT_ANALYTICS: 3307
           DB_DATABASE_ANALYTICS: tc_analytics
-          DB_USERNAME: root # User root bisa dipakai untuk keduanya di testing env
-          DB_PASSWORD: root
+          DB_USERNAME_ANALYTICS: root # User root bisa dipakai untuk keduanya di testing env
+          DB_PASSWORD_ANALYTICS: root
       run: vendor/bin/phpunit --coverage-text --coverage-html build/coverage-report
 
     # Tahap 3: Static Code Analysis (Larastan)
