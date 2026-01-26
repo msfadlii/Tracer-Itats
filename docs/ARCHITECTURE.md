@@ -26,6 +26,12 @@ Untuk memenuhi **Kebutuhan Spesifik Kelompok 5**, kami menerapkan arsitektur *Du
     * **Fungsi:** OLAP (*Online Analytical Processing*).
     * **Konten:** Menyimpan data agregat dan statistik hasil pengolahan.
     * **Prioritas:** Kecepatan pembacaan (*Read Speed*) untuk pelaporan kompleks.
+* **Implementasi Teknis Dual Database:**
+    * **Lingkungan Produksi (Docker Compose):** Menggunakan dua container terpisah (`tc_db_main` dan `tc_db_analytics`) yang berkomunikasi melalui jaringan internal Docker. Keduanya menggunakan port standar 3306 di dalam jaringan internal.
+    * **Lingkungan CI/CD (GitHub Actions):** Karena keterbatasan port *host*, kami menerapkan strategi **Port Mapping**:
+        * `mysql_main`: Berjalan di port 3306.
+        * `mysql_analytics`: Berjalan di port **3307** (untuk menghindari konflik port).
+    * **Aplikasi Laravel:** Dikonfigurasi untuk mengenali dua koneksi database (`mysql` dan `mysql_analytics`) secara dinamis melalui Environment Variable `DB_PORT_ANALYTICS`.
 
 Pemisahan ini sangat krusial dalam DevOps. Saat admin menjalankan query laporan berat di `db_analytics`, performa `db_main` tidak akan terganggu, sehingga alumni lain tetap bisa mengisi kuesioner dengan lancar tanpa *lag*.
 

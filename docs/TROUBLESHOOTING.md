@@ -38,3 +38,13 @@ Dokumen ini mencatat masalah teknis yang dihadapi selama pengembangan pipeline C
 * **Gejala:** Aplikasi tidak bisa connect ke database di dalam Docker.
 * **Penyebab:** `DB_HOST` diatur ke `127.0.0.1`.
 * **Solusi:** Mengubah `DB_HOST` di `.env` menjadi nama service container database, yaitu `db_main` atau `mysql_main` sesuai definisi di `docker-compose.yml`.
+
+### Kasus 7: YAML Syntax Error "Duplicate Key"
+* **Gejala:** Pipeline GitHub Actions gagal dengan pesan `'DB_USERNAME' is already defined`.
+* **Penyebab:** Dalam konfigurasi environment variable job, key `DB_USERNAME` didefinisikan dua kali (untuk DB utama dan DB analitik) dalam satu blok `env`.
+* **Solusi:** Memberikan nama variabel yang unik untuk koneksi kedua, yaitu `DB_USERNAME_ANALYTICS` dan `DB_PASSWORD_ANALYTICS`, serta memperbarui file `config/database.php` untuk membaca variabel baru tersebut.
+
+### Kasus 8: Connection Refused pada Database Analitik di CI/CD
+* **Gejala:** Tes integritas gagal karena Laravel tidak bisa terhubung ke database analitik saat pipeline berjalan.
+* **Penyebab:** Di lingkungan GitHub Actions, service database analitik belum didefinisikan, atau portnya bentrok dengan database utama (3306).
+* **Solusi:** Menambahkan service `mysql_analytics` di `main.yaml` dan melakukan mapping port ke **3307:3306**.

@@ -9,9 +9,13 @@ Dokumen ini merangkum hasil validasi otomatis yang dilakukan oleh pipeline CI/CD
 * **Code Coverage:** ~15.67% (Mencakup area kritis: Autentikasi, Model User, dan Controller Alumni)
 
 ## II. Validasi Kebutuhan Kelompok 5 (Large Dataset)
-Pengujian `Tests\Feature\AlumniTest::system_can_handle_large_dataset_seeding` berhasil membuktikan stabilitas sistem.
-* **Skenario:** Melakukan *seeding* data dummy sebanyak 1000 baris ke dalam tabel `alumni`.
-* **Hasil:** Database `tc_main` berhasil menyimpan 1000 record tanpa kegagalan integritas, dan fungsi `Alumni::count()` memverifikasi jumlah tersebut secara akurat dalam waktu eksekusi kurang dari 2 detik.
+Pengujian `Tests\Feature\AlumniTest` telah diperbarui untuk memvalidasi arsitektur Dual Database:
+1.  **Large Dataset Handling:**
+    * **Skenario:** Melakukan *seeding* data dummy sebanyak 1000 baris ke dalam **DUA** database sekaligus (`mysql` dan `mysql_analytics`).
+    * **Hasil:** Kedua database berhasil menyimpan data secara sinkron.
+2.  **Analytics Data Integrity:**
+    * **Metode:** Menggunakan endpoint `/analytics/summary` yang menjalankan logika komparasi *row count* antara Model `Alumni` (DB Utama) dan `AnalyticsAlumni` (DB Analitik).
+    * **Hasil:** API mengembalikan status `Verified` dengan jumlah data yang identik pada kedua database, membuktikan integritas data terjaga dalam arsitektur terpisah.
 
 ## III. Laporan Static Code Analysis (SCA)
 Kami menggunakan **Larastan** (PHPStan wrapper) sebagai *Quality Gate*. Perjalanan konfigurasi SCA ini mengalami beberapa iterasi:
