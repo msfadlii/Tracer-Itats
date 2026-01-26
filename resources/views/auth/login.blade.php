@@ -119,6 +119,7 @@
                     <img src="/images/logo-itats-new.png" alt="logo itats" width="100" class="relative z-10 mx-auto">
                 </div>
             </div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Video Demo Kelompok 5</h2>
             <h2 class="text-3xl font-bold text-gray-900 mb-2">Selamat Datang</h2>
             <p class="text-gray-600">Masuk ke akun ITATS Anda</p>
         </div>
