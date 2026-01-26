@@ -19,7 +19,14 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
+      mysql_analytics:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: tc_analytics 
+        ports:
+          - 3307:3306 # Mapping ke port 3307 di host agar tidak bentrok dengan 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
     - uses: actions/checkout@v4
 
@@ -44,9 +51,16 @@ jobs:
 
     - name: Run Migrations & Seeding (1000 Records Requirement)
       run: |
+        # Migrasi ke DB Utama
         php artisan migrate:fresh --force
         php artisan db:seed --class=AlumniSeeder --force
+
+        # Migrasi ke DB Analitik
+        # Kita gunakan --database=mysql_analytics untuk menarget koneksi kedua
+        php artisan migrate:fresh --database=mysql_analytics --path=database/migrations --force
+        php artisan db:seed --class=AlumniSeeder --database=mysql_analytics --force
       env:
+        # Konfigurasi DB Utama
         DB_CONNECTION: mysql
         DB_HOST: 127.0.0.1
         DB_PORT: 3306
@@ -54,14 +68,30 @@ jobs:
         DB_USERNAME: root
         DB_PASSWORD: root
 
+        # Konfigurasi DB Analitik
+        DB_CONNECTION_ANALYTICS: mysql
+        DB_HOST_ANALYTICS: 127.0.0.1
+        DB_PORT_ANALYTICS: 3307 
+        DB_DATABASE_ANALYTICS: tc_analytics
+        DB_USERNAME_ANALYTICS: root
+        DB_PASSWORD_ANALYTICS: root
+
     # Tahap 2: Unit test dengan HTML report & coverage
     - name: Run PHPUnit Tests
       env:
+          # DB Utama
           DB_CONNECTION: mysql
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: tc_main
           DB_USERNAME: root
+          DB_PASSWORD: root
+
+          # DB Analitik
+          DB_HOST_ANALYTICS: 127.0.0.1
+          DB_PORT_ANALYTICS: 3307
+          DB_DATABASE_ANALYTICS: tc_analytics
+          DB_USERNAME: root # User root bisa dipakai untuk keduanya di testing env
           DB_PASSWORD: root
       run: vendor/bin/phpunit --coverage-text --coverage-html build/coverage-report
 
