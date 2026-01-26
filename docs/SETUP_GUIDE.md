@@ -37,8 +37,11 @@ composer install
 # Generate Application Key
 php artisan key:generate
 
-# Migrasi Database & Seeding 1000 Data
+# Migrasi Database Utama & Seeding 1000 Data
 php artisan migrate:fresh --seed --class=AlumniSeeder
+
+# Migrasi Database Analitik & Seeding
+php artisan migrate:fresh --database=mysql_analytics --path=database/migrations --seed --class=AlumniSeeder
 
 ## III. Verifikasi Instalasi
 Buka browser dan akses http://localhost.
